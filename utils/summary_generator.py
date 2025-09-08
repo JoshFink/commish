@@ -19,12 +19,12 @@ def moderate_text(client, text):
         )
         
         # Extract the first result
-        result = response['results'][0]
+        result = response.results[0]
         
         # Check if the content is flagged
-        if result['flagged']:
+        if result.flagged:
             # Log the flagged categories
-            flagged_categories = [category for category, flagged in result['categories'].items() if flagged]
+            flagged_categories = [category for category, flagged in result.categories.items() if flagged]
             print(f"Moderation flagged the following categories: {', '.join(flagged_categories)}")
             return False  # Return False if any category is flagged
         return True  # Content is not flagged, return True
@@ -149,7 +149,7 @@ def get_espn_league_summary(league_id, espn2, SWID):
     # Fetch data from ESPN Fantasy API and compute statistics   
     start_time_league_connect = datetime.datetime.now() 
     league_id = league_id
-    year = 2024
+    year = datetime.datetime.now().year
     espn_s2 = espn2
     swid = SWID
     # Initialize league & current week
