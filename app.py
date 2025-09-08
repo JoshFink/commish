@@ -19,16 +19,34 @@ OPEN_AI_ORG_ID = st.secrets["OPENAI_ORG_ID"]
 OPEN_AI_PROJECT_ID = st.secrets["OPENAI_API_PROJECT_ID"]
 OPENAI_API_KEY = st.secrets["OPENAI_COMMISH_API_KEY"]
 
-try:
-    client = OpenAI(
-        organization=OPEN_AI_ORG_ID,
-        project=OPEN_AI_PROJECT_ID,
-        api_key=OPENAI_API_KEY,
-        http_client=None  # Let OpenAI handle HTTP client creation
-    )
-except Exception as e:
-    # Fallback initialization without organization/project if needed
-    client = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize client as None - will be created when needed
+client = None
+
+def get_openai_client():
+    """Initialize OpenAI client when needed to avoid startup conflicts"""
+    global client
+    if client is None:
+        try:
+            # Import httpx to create a clean HTTP client
+            import httpx
+            http_client = httpx.Client(
+                timeout=30.0,
+                limits=httpx.Limits(max_keepalive_connections=1, max_connections=5)
+            )
+            client = OpenAI(
+                organization=OPEN_AI_ORG_ID,
+                project=OPEN_AI_PROJECT_ID,
+                api_key=OPENAI_API_KEY,
+                http_client=http_client
+            )
+        except Exception as e:
+            # Fallback to basic client without HTTP client customization
+            try:
+                client = OpenAI(api_key=OPENAI_API_KEY)
+            except Exception as e2:
+                st.error(f"Failed to initialize OpenAI client: {e2}")
+                return None
+    return client
 
 st.set_page_config(
     page_title="Commish.ai",
@@ -239,8 +257,13 @@ def main():
 
                 LOGGER.debug("Initializing GPT Summary Stream...")
                 try:
+                    openai_client = get_openai_client()
+                    if openai_client is None:
+                        st.error("Failed to initialize OpenAI client")
+                        return
+                    
                     gpt4_summary_stream = summary_generator.generate_gpt4_summary_streaming(
-                        client, summary, character_description, trash_talk_level
+                        openai_client, summary, character_description, trash_talk_level
                     )
                     LOGGER.debug(f"Generator object initialized: {gpt4_summary_stream}")
                     
