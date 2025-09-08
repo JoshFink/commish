@@ -64,7 +64,19 @@ def generate_gpt4_summary_streaming(client, summary, character_choice, trash_tal
                 yield chunk.choices[0].delta.content
 
     except Exception as e:
-        yield f"Error details: {e}"
+        error_str = str(e)
+        # Handle specific OpenAI API errors with user-friendly messages
+        if "insufficient_quota" in error_str or "429" in error_str:
+            yield "⚠️ OpenAI API quota exceeded. Please check your billing plan or try again later."
+        elif "401" in error_str or "unauthorized" in error_str.lower():
+            yield "🔐 OpenAI API key is invalid or expired. Please check your credentials."
+        elif "503" in error_str or "service_unavailable" in error_str:
+            yield "🔧 OpenAI service is temporarily unavailable. Please try again in a few minutes."
+        elif "rate_limit" in error_str.lower() or "too_many_requests" in error_str.lower():
+            yield "⏱️ Rate limit exceeded. Please wait a moment and try again."
+        else:
+            # Generic error message for other issues
+            yield f"❌ Unable to generate AI summary. Please try again later. (Error: {type(e).__name__})"
 
 # @st.cache_data(ttl=3600) - Cannot hash argument 'league'
 def generate_espn_summary(league, cw):

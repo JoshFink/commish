@@ -290,18 +290,51 @@ def main():
                 
                 except Exception as e:
                     LOGGER.error(f"An error occurred while streaming GPT response: {str(e)}")
-                    st.error(f"An error occurred: {str(e)}")
+                    error_str = str(e)
+                    
+                    # Display user-friendly error messages for OpenAI API issues
+                    if "insufficient_quota" in error_str or "429" in error_str:
+                        st.error("⚠️ **OpenAI API Quota Exceeded**\n\nYour OpenAI API credits have been exhausted. Please check your billing plan at [OpenAI Platform](https://platform.openai.com/billing) or try again later.")
+                    elif "401" in error_str or "unauthorized" in error_str.lower():
+                        st.error("🔐 **OpenAI API Authentication Failed**\n\nThe API key appears to be invalid or expired. Please contact support to resolve this issue.")
+                    elif "503" in error_str or "service_unavailable" in error_str:
+                        st.error("🔧 **OpenAI Service Unavailable**\n\nOpenAI's service is temporarily unavailable. Please try again in a few minutes.")
+                    elif "rate_limit" in error_str.lower() or "too_many_requests" in error_str.lower():
+                        st.error("⏱️ **Rate Limit Exceeded**\n\nToo many requests have been made recently. Please wait a moment and try again.")
+                    else:
+                        st.error(f"❌ **Unexpected Error**\n\nSomething went wrong while generating your summary. Please try again later.")
+                    
+                    # Only show detailed error in debug mode
+                    if st.session_state.get('debug_mode', False):
+                        with st.expander("Debug Information"):
+                            st.text(traceback.format_exc())
+                    
                     LOGGER.exception(e)
-                    st.text(traceback.format_exc())
                     
                 LOGGER.debug("GPT Stream done!")
                 progress.text('Done!')
                 progress.progress(100)
                 
             except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
+                LOGGER.error(f"An error occurred in main form processing: {str(e)}")
+                error_str = str(e)
+                
+                # Handle common errors gracefully
+                if "league not found" in error_str.lower() or "invalid league" in error_str.lower():
+                    st.error("🏈 **League Not Found**\n\nThe league ID you provided could not be found. Please double-check your league ID and try again.")
+                elif "authentication" in error_str.lower() or "invalid credentials" in error_str.lower():
+                    st.error("🔐 **Authentication Failed**\n\nThere was an issue with your login credentials. Please verify your information and try again.")
+                elif "network" in error_str.lower() or "connection" in error_str.lower():
+                    st.error("🌐 **Network Error**\n\nUnable to connect to the fantasy sports service. Please check your internet connection and try again.")
+                else:
+                    st.error("❌ **Something Went Wrong**\n\nAn unexpected error occurred while processing your request. Please try again.")
+                
+                # Only show detailed error in debug mode
+                if st.session_state.get('debug_mode', False):
+                    with st.expander("Debug Information"):
+                        st.text(traceback.format_exc())
+                
                 LOGGER.exception(e)
-                st.text(traceback.format_exc())
 
 if __name__ == "__main__":
     main()
