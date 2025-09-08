@@ -1,5 +1,4 @@
 import streamlit as st
-# from openai import OpenAI
 from openai import OpenAI
 from streamlit.logger import get_logger
 from utils import summary_generator
@@ -186,7 +185,7 @@ def main():
                         with open(private_file_path, 'w') as f:
                             json.dump(private_data, f)
             elif league_type == "Sleeper":
-                st.text_input("LeagueID", key='LeagueID')
+                st.text_input("LeagueID", key='LeagueID', value='1257120279386148864')
             
             st.text_input("Character Description", key='Character Description', placeholder="Dwight Schrute", help= "Describe a persona for the AI to adopt. E.g. 'Dwight Schrute' or 'A very drunk Captain Jack Sparrow'")
             st.slider("Trash Talk Level", 1, 10, key='Trash Talk Level', value=5, help="Scale of 1 to 10, where 1 is friendly banter and 10 is more extreme trash talk")
