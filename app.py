@@ -19,11 +19,16 @@ OPEN_AI_ORG_ID = st.secrets["OPENAI_ORG_ID"]
 OPEN_AI_PROJECT_ID = st.secrets["OPENAI_API_PROJECT_ID"]
 OPENAI_API_KEY = st.secrets["OPENAI_COMMISH_API_KEY"]
 
-client = OpenAI(
-    organization=OPEN_AI_ORG_ID,
-    project=OPEN_AI_PROJECT_ID,
-    api_key=OPENAI_API_KEY
+try:
+    client = OpenAI(
+        organization=OPEN_AI_ORG_ID,
+        project=OPEN_AI_PROJECT_ID,
+        api_key=OPENAI_API_KEY,
+        http_client=None  # Let OpenAI handle HTTP client creation
     )
+except Exception as e:
+    # Fallback initialization without organization/project if needed
+    client = OpenAI(api_key=OPENAI_API_KEY)
 
 st.set_page_config(
     page_title="Commish.ai",
