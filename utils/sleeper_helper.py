@@ -177,7 +177,9 @@ def team_on_hottest_streak(rosters, user_team_mapping, roster_owner_mapping):
     for roster in rosters:
         owner_id = roster_owner_mapping.get(roster['roster_id'])
         team_name = user_team_mapping.get(owner_id, "Unknown Team")
-        streak = roster['metadata'].get('streak', '')
+        # Handle case where metadata might be None
+        metadata = roster.get('metadata') or {}
+        streak = metadata.get('streak', '')
         if 'W' in streak:
             current_streak = int(streak.split('W')[0])
         else:
