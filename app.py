@@ -102,7 +102,7 @@ def check_authentication():
     return False
 
 st.set_page_config(
-    page_title="Commish.ai",
+    page_title="Fantasy Football AI Commish",
     page_icon="🏈",
     layout="centered",
     initial_sidebar_state="expanded"
