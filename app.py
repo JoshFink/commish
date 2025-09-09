@@ -12,6 +12,7 @@ from requests.auth import HTTPBasicAuth
 import time
 import os
 import shutil
+from datetime import datetime, timedelta
 
 LOGGER = get_logger(__name__)
 
@@ -48,6 +49,38 @@ def get_openai_client():
                 return None
     return client
 
+def check_authentication():
+    """Check if user is authenticated with 24-hour session persistence"""
+    
+    # Check if user is already authenticated and session is valid
+    if 'authenticated' in st.session_state and 'auth_timestamp' in st.session_state:
+        auth_time = datetime.fromisoformat(st.session_state['auth_timestamp'])
+        if datetime.now() - auth_time < timedelta(hours=24):
+            return True
+        else:
+            # Session expired, clear authentication
+            st.session_state['authenticated'] = False
+            st.session_state.pop('auth_timestamp', None)
+    
+    # Show login form
+    st.title("🏈 Fantasy Football AI Commissioner")
+    st.markdown("Please enter the password to access the application:")
+    
+    password = st.text_input("Password", type="password", key="auth_password")
+    
+    if st.button("Login", key="auth_login"):
+        if password == st.secrets["APP_PASSWORD"]:
+            st.session_state['authenticated'] = True
+            st.session_state['auth_timestamp'] = datetime.now().isoformat()
+            st.success("Authentication successful! Redirecting...")
+            st.rerun()
+        else:
+            st.error("Incorrect password. Please try again.")
+    
+    st.markdown("---")
+    st.markdown("*Access is restricted to authorized users only.*")
+    return False
+
 st.set_page_config(
     page_title="Commish.ai",
     page_icon="🏈",
@@ -56,6 +89,10 @@ st.set_page_config(
 )
 
 def main():
+    # Check authentication first
+    if not check_authentication():
+        return
+    
     st.write("""
     ## Instructions:
 
@@ -268,7 +305,6 @@ def main():
                     shutil.rmtree(temp_dir)
                     st.write("Done with cleanup! Creating AI summary now...")
                 elif league_type == "Sleeper":
-                    auth_directory = "auth"
                     summary = summary_generator.generate_sleeper_summary(
                         league_id  
                     )
