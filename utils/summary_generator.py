@@ -53,7 +53,7 @@ def generate_gpt4_summary_streaming(client, summary, character_choice, trash_tal
         response = client.chat.completions.create(
             model=model,  # Use the selected model
             messages=messages,
-            max_tokens=1600,  # Control response length
+            max_tokens=15000,  # Control response length
             stream=True,
             stream_options={"include_usage": True}  # Enable usage tracking for cost calculation
         )
