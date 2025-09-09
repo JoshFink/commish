@@ -373,9 +373,6 @@ def main():
                                     # Create DataFrame for table display
                                     rankings = power_rankings_data["rankings"]
                                     
-                                    # Debug: Check number of teams
-                                    st.write(f"Debug: Processing {len(rankings)} teams")
-                                    
                                     # Prepare data for table
                                     table_data = []
                                     for team in rankings:
@@ -394,11 +391,14 @@ def main():
                                     
                                     df = pd.DataFrame(table_data)
                                     
+                                    # Calculate dynamic height: header (35px) + rows (35px each) + padding (20px)
+                                    dynamic_height = 35 + (len(rankings) * 35) + 20
+                                    
                                     # Display main table with custom styling
                                     st.dataframe(
                                         df,
                                         width='stretch',
-                                        height=600,  # Increase height to show all teams
+                                        height=dynamic_height,
                                         hide_index=True,
                                         column_config={
                                             "Rank": st.column_config.TextColumn("Rank", width="small"),
