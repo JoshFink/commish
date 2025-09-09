@@ -380,7 +380,7 @@ def main():
                     )
                     LOGGER.debug(summary)
                     LOGGER.info(f"Generated Sleeper Summary: \n{summary}")
-                    st.write(summary) #to delete
+                    st.text(summary)  # Use st.text to preserve formatting
                 
                 progress.text('Generating AI summary...')
                 progress.progress(50)
