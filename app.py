@@ -8,6 +8,7 @@ from utils import summary_generator
 from utils.helper import check_availability
 from utils.model_config import get_flattened_models, estimate_cost, get_model_recommendation, calculate_cost
 from utils.pdf_generator import generate_pdf_from_summary, get_filename
+from utils.power_ranking_generator import generate_sleeper_power_rankings
 import traceback
 import requests
 import json
@@ -323,6 +324,37 @@ def main():
             
             submit_button = st.form_submit_button(label='🤖 Generate AI Summary')
 
+        # Power Rankings Button (outside the form for independent operation)
+        st.markdown("---")
+        st.subheader("📊 Statistical Power Rankings")
+        st.write("Generate objective power rankings based on statistical analysis (no AI personality)")
+        
+        power_rankings_button = st.button(
+            label='📊 Calculate Power Rankings',
+            help="Generate statistical power rankings based on wins, points, consistency, and recent form"
+        )
+        
+        # Handling Power Rankings
+        if power_rankings_button:
+            if league_type == "Sleeper":
+                league_id = st.session_state.get('LeagueID', '')
+                if not league_id:
+                    st.error("League ID is required for power rankings.")
+                else:
+                    try:
+                        with st.spinner('Calculating power rankings...'):
+                            power_rankings_result = generate_sleeper_power_rankings(league_id)
+                        
+                        st.success("Power rankings generated successfully!")
+                        st.text(power_rankings_result)
+                        
+                    except Exception as e:
+                        st.error(f"Error generating power rankings: {str(e)}")
+                        LOGGER.error(f"Power rankings error: {str(e)}")
+            else:
+                st.info("Power rankings are currently only available for Sleeper leagues.")
+        
+        st.markdown("---")
     
         # Handling form 
         if submit_button:
