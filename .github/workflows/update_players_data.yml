@@ -31,5 +31,8 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add players_data.json
-        git commit -m "Update players data" || echo "No changes to commit"
-        git push
+        if git commit -m "Update players data"; then
+          git push
+        else
+          echo "No changes to commit"
+        fi
