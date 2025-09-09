@@ -401,16 +401,16 @@ def main():
                                         height=dynamic_height,
                                         hide_index=True,
                                         column_config={
-                                            "Rank": st.column_config.TextColumn("Rank", width="small"),
-                                            "Team": st.column_config.TextColumn("Team", width="medium"),
-                                            "Record": st.column_config.TextColumn("Record", width="small"),
-                                            "Power Score": st.column_config.TextColumn("Power Score", width="medium"),
-                                            "Avg Points": st.column_config.TextColumn("Avg Points", width="medium"),
-                                            "Point Diff": st.column_config.TextColumn("Point Diff", width="medium"),
-                                            "Win %": st.column_config.TextColumn("Win %", width="small"),
-                                            "Recent Form": st.column_config.TextColumn("Recent Form", width="medium"),
-                                            "High Score": st.column_config.TextColumn("High Score", width="medium"),
-                                            "Low Score": st.column_config.TextColumn("Low Score", width="medium")
+                                            "Rank": st.column_config.TextColumn("Rank", width=50),
+                                            "Team": st.column_config.TextColumn("Team", width=140),
+                                            "Record": st.column_config.TextColumn("Record", width=60),
+                                            "Power Score": st.column_config.TextColumn("Power Score", width=80),
+                                            "Avg Points": st.column_config.TextColumn("Avg Points", width=75),
+                                            "Point Diff": st.column_config.TextColumn("Point Diff", width=75),
+                                            "Win %": st.column_config.TextColumn("Win %", width=60),
+                                            "Recent Form": st.column_config.TextColumn("Recent Form", width=85),
+                                            "High Score": st.column_config.TextColumn("High Score", width=75),
+                                            "Low Score": st.column_config.TextColumn("Low Score", width=75)
                                         }
                                     )
                                     
