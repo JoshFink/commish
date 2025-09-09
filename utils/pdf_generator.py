@@ -63,7 +63,7 @@ def generate_pdf_from_summary(
     story.extend(create_main_content(summary_content, styles))
     
     # Add footer
-    story.extend(create_footer_content(styles))
+    story.extend(create_footer_content(styles, league_name, week_number))
     
     # Build the PDF
     doc.build(story)
@@ -193,10 +193,10 @@ def create_main_content(summary_content, styles):
     
     return story
 
-def create_footer_content(styles):
+def create_footer_content(styles, league_name="Fantasy Football League", week_number="Week Recap"):
     """Create the footer content"""
     story = []
-    current_date = datetime.now().strftime("%B %d, %Y")
+    current_year = datetime.now().year
     
     story.append(Spacer(1, 36))
     
@@ -204,8 +204,8 @@ def create_footer_content(styles):
     story.append(create_decorative_line())
     story.append(Spacer(1, 12))
     
-    # Footer text - removed AI reference
-    footer_text = f"Generated on {current_date}"
+    # Footer text with league name and week
+    footer_text = f"{league_name} | {week_number}, {current_year}"
     story.append(Paragraph(footer_text, styles['Footer']))
     
     return story
