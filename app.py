@@ -86,7 +86,7 @@ def check_authentication():
 
 st.set_page_config(
     page_title="Commish.ai",
-    page_icon="./logo.png",
+    page_icon="🏈",
     layout="centered",
     initial_sidebar_state="expanded"
 )
