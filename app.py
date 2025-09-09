@@ -93,18 +93,17 @@ def main():
     if not check_authentication():
         return
     
-    st.write("""
-    ## Instructions:
-
-    1. **Select your league type** from the sidebar.
-    2. **Fill out the required fields** based on your league selection:
-    - **ESPN**:
-        - *League ID*: [Find it here](https://support.espn.com/hc/en-us/articles/360045432432-League-ID).
-        - *SWID and ESPN_S2*: Use this [Chrome extension](https://chrome.google.com/webstore/detail/espn-private-league-key-a/bakealnpgdijapoiibbgdbogehhmaopn) or follow [manual steps](https://www.gamedaybot.com/help/espn_s2-and-swid/).
-    - **Sleeper**:
-        - *League ID*: [Find it here](https://support.sleeper.com/en/articles/4121798-how-do-i-find-my-league-id). 
-    3. **Hit "🤖 Generate AI Summary"** to get your weekly summary.
-    """)
+    with st.expander("📋 **Instructions**"):
+        st.write("""
+        1. **Select your league type** from the sidebar.
+        2. **Fill out the required fields** based on your league selection:
+        - **ESPN**:
+            - *League ID*: [Find it here](https://support.espn.com/hc/en-us/articles/360045432432-League-ID).
+            - *SWID and ESPN_S2*: Use this [Chrome extension](https://chrome.google.com/webstore/detail/espn-private-league-key-a/bakealnpgdijapoiibbgdbogehhmaopn) or follow [manual steps](https://www.gamedaybot.com/help/espn_s2-and-swid/).
+        - **Sleeper**:
+            - *League ID*: [Find it here](https://support.sleeper.com/en/articles/4121798-how-do-i-find-my-league-id). 
+        3. **Hit "🤖 Generate AI Summary"** to get your weekly summary.
+        """)
 
 
     with st.sidebar:
