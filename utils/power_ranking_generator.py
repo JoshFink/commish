@@ -352,6 +352,7 @@ def generate_sleeper_power_rankings(league_id: str) -> str:
         # Oberon Method
         oberon_rankings = sorted(rankings, key=lambda x: x['oberon_rating'], reverse=True)
         output.append("Oberon Mt. Power Rating (60% Avg Score, 20% High/Low, 20% Win %):")
+        output.append("A balanced approach emphasizing consistent scoring performance with win rate consideration.")
         for i, team in enumerate(oberon_rankings):
             output.append(f"  {i+1}. {team['team_name']}: {team['oberon_rating']:.2f}")
         output.append("")
@@ -359,6 +360,7 @@ def generate_sleeper_power_rankings(league_id: str) -> str:
         # Team Value Index
         tvi_rankings = sorted(rankings, key=lambda x: x['team_value_index'], reverse=True)
         output.append("Team Value Index (Points For/Against * Win %):")
+        output.append("Measures efficiency by combining scoring differential with actual wins achieved.")
         for i, team in enumerate(tvi_rankings):
             output.append(f"  {i+1}. {team['team_name']}: {team['team_value_index']:.3f}")
         
