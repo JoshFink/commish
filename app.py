@@ -120,9 +120,9 @@ def main():
                 "Recaps are best generated between Tuesday 4am EST and Thursday 7pm EST. "
                 "Please come back during this time for the most accurate recap."
             )
-        league_type = st.selectbox("Select League Type", ["Select", "ESPN", "Yahoo", "Sleeper"], key='league_type')
+        league_type = st.selectbox("Select League Type", ["ESPN", "Sleeper"], index=1, key='league_type')
 
-    if league_type != "Select":
+    if league_type:
         with st.sidebar.form(key='my_form'):
             if league_type == "ESPN":
                 st.text_input("LeagueID", key='LeagueID')
