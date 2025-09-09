@@ -67,8 +67,6 @@ def check_authentication():
             auth_time = datetime.fromisoformat(st.session_state['auth_timestamp'])
             time_diff = datetime.now() - auth_time
             if time_diff < timedelta(hours=24):
-                # Debug: show session info in sidebar (remove this after testing)
-                # st.sidebar.info(f"Session valid. Time remaining: {timedelta(hours=24) - time_diff}")
                 return True
             else:
                 # Session expired, clear authentication
@@ -87,17 +85,15 @@ def check_authentication():
     
     if st.button("Login", key="auth_login"):
         if password == st.secrets["APP_PASSWORD"]:
-            # Set authentication state
+            # Set authentication state in session
+            current_time = datetime.now().isoformat()
             st.session_state['authenticated'] = True
-            st.session_state['auth_timestamp'] = datetime.now().isoformat()
+            st.session_state['auth_timestamp'] = current_time
             
-            # Show success message
+            # Show success message and redirect
             st.success("Authentication successful! Redirecting...")
-            
-            # Force a rerun to refresh the page
-            import time
-            time.sleep(0.1)  # Small delay to ensure state is saved
             st.rerun()
+            
         else:
             st.error("Incorrect password. Please try again.")
     
