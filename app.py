@@ -427,14 +427,14 @@ def main():
                                             st.markdown("**🔬 Oberon Mt. Power Rating**")
                                             st.caption("60% Avg Score, 20% High/Low, 20% Win %")
                                             oberon_rankings = sorted(rankings, key=lambda x: x['oberon_rating'], reverse=True)
-                                            for i, team in enumerate(oberon_rankings[:5]):
+                                            for i, team in enumerate(oberon_rankings):
                                                 st.text(f"{i+1}. {team['team_name']}: {team['oberon_rating']:.2f}")
                                         
                                         with col2:
                                             st.markdown("**💎 Team Value Index**")
                                             st.caption("Points For/Against × Win %")
                                             tvi_rankings = sorted(rankings, key=lambda x: x['team_value_index'], reverse=True)
-                                            for i, team in enumerate(tvi_rankings[:5]):
+                                            for i, team in enumerate(tvi_rankings):
                                                 st.text(f"{i+1}. {team['team_name']}: {team['team_value_index']:.3f}")
                         
                     except Exception as e:
