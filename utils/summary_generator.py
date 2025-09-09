@@ -35,12 +35,41 @@ def moderate_text(client, text):
 
 # Lateny troubleshooting: https://platform.openai.com/docs/guides/production-best-practices/improving-latencies
 
-def generate_gpt4_summary_streaming(client, summary, character_choice, trash_talk_level, model="gpt-4o-mini"):
-    # Construct the instruction for GPT-4 based on user inputs
-    instruction = f"You will be provided a summary below containing the most recent weekly stats for a fantasy football league. \
-    Create a weekly recap in the style of {character_choice}. Do not simply repeat every single stat verbatim - be creative while calling out stats and being on theme. You should include trash talk with a level of {trash_talk_level} based on a scale of 1-10 (1 being no trash talk, 10 being excessive hardcore trash talk); feel free to make fun of (or praise) team names and performances, and add a touch of humor related to the chosen character. \
-    Keep your summary concise enough (under 800 characters) as to not overwhelm the user with stats but still engaging, funny, thematic, and insightful. You can sprinkle in a few emojis if they are thematic. Only respond in character and do not reply with anything other than your recap. Begin by introducing \
-    your character. Here is the provided weekly fantasy summary: {summary}"
+def generate_gpt4_summary_streaming(client, summary, character_choice, trash_talk_level, model="gpt-4o-mini", summary_format="Classic"):
+    # Construct the instruction for GPT-4 based on user inputs and format choice
+    if summary_format == "Detailed":
+        instruction = f"""You will be provided a summary below containing the most recent weekly stats for a fantasy football league.
+
+Create a comprehensive weekly recap in the style of {character_choice} with the following detailed structure:
+
+1. **Week Overview**: Start with an engaging introduction about the week, mentioning any major storylines, close games, or blowouts.
+
+2. **League Standings Update**: Briefly discuss current standings and playoff implications if relevant.
+
+3. **Matchup-by-Matchup Analysis**: For each game, include:
+   - Team records going into the game
+   - Projected vs actual final scores
+   - Key player performances with specific stats
+   - Notable strategic decisions (good pickups, start/sit decisions)
+   - Brief narrative about what happened and why
+
+4. **Week Highlights**: 
+   - Highest scoring team/player
+   - Biggest disappointments or busts
+   - Best waiver wire pickups that paid off
+   - Any injuries or other notable events
+
+5. **Trash Talk & Commentary**: Include trash talk at level {trash_talk_level} (1-10 scale) throughout, making it character-appropriate. Be entertaining and engaging while staying true to {character_choice}'s personality.
+
+Write this as an engaging, detailed recap that fantasy football commissioners would be proud to share with their league. Don't just list stats - tell the story of the week with personality and flair.
+
+Here is the provided weekly fantasy summary: {summary}"""
+    else:
+        # Classic format (existing)
+        instruction = f"You will be provided a summary below containing the most recent weekly stats for a fantasy football league. \
+        Create a weekly recap in the style of {character_choice}. Do not simply repeat every single stat verbatim - be creative while calling out stats and being on theme. You should include trash talk with a level of {trash_talk_level} based on a scale of 1-10 (1 being no trash talk, 10 being excessive hardcore trash talk); feel free to make fun of (or praise) team names and performances, and add a touch of humor related to the chosen character. \
+        Keep your summary concise enough (under 800 characters) as to not overwhelm the user with stats but still engaging, funny, thematic, and insightful. You can sprinkle in a few emojis if they are thematic. Only respond in character and do not reply with anything other than your recap. Begin by introducing \
+        your character. Here is the provided weekly fantasy summary: {summary}"
 
     # Create the messages array
     messages = [

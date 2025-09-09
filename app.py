@@ -224,6 +224,15 @@ def main():
             st.text_input("Character Description", key='Character Description', value="John Madden", help= "Describe a persona for the AI to adopt. E.g. 'Dwight Schrute' or 'A very drunk Captain Jack Sparrow'")
             st.slider("Trash Talk Level", 1, 10, key='Trash Talk Level', value=5, help="Scale of 1 to 10, where 1 is friendly banter and 10 is more extreme trash talk")
             
+            # Summary format selection
+            summary_format = st.radio(
+                "Summary Format",
+                options=["Classic", "Detailed"],
+                index=0,
+                key='summary_format',
+                help="Classic: Concise, character-driven recap. Detailed: Comprehensive matchup-by-matchup analysis with player stats and storylines."
+            )
+            
             # Model selection dropdown with pricing information
             model_options = get_flattened_models()
             selected_model_display = st.selectbox(
@@ -319,7 +328,7 @@ def main():
                         return
                     
                     gpt4_summary_stream = summary_generator.generate_gpt4_summary_streaming(
-                        openai_client, summary, character_description, trash_talk_level, selected_model_id
+                        openai_client, summary, character_description, trash_talk_level, selected_model_id, summary_format
                     )
                     LOGGER.debug(f"Generator object initialized: {gpt4_summary_stream}")
                     
