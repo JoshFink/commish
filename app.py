@@ -304,10 +304,16 @@ def main():
                                 if chunk.startswith("__USAGE_DATA__") and chunk.endswith("__"):
                                     LOGGER.debug(f"Found usage data chunk: {chunk}")
                                     # Parse usage data: __USAGE_DATA__prompt,completion,total__model__
-                                    parts = chunk.replace("__USAGE_DATA__", "").replace("__", "").split("__")
+                                    # Remove the prefix and suffix, then split by the remaining __
+                                    content = chunk[14:-2]  # Remove "__USAGE_DATA__" (14 chars) and final "__" (2 chars)
+                                    parts = content.split("__")
+                                    LOGGER.debug(f"Parsing content: '{content}' -> parts: {parts}")
+                                    
                                     if len(parts) >= 2:
                                         tokens = parts[0].split(",")
                                         model_used = parts[1]
+                                        LOGGER.debug(f"Tokens: {tokens}, Model: {model_used}")
+                                        
                                         if len(tokens) == 3:
                                             # Create usage object-like structure
                                             class UsageData:
@@ -320,11 +326,15 @@ def main():
                                                 "usage": UsageData(tokens[0], tokens[1], tokens[2]),
                                                 "model": model_used
                                             }
-                                            LOGGER.debug(f"Parsed usage info: {usage_info}")
+                                            LOGGER.debug(f"Successfully parsed usage info: {usage_info}")
                                 elif chunk.startswith("__USAGE_DATA_FALLBACK__") and chunk.endswith("__"):
                                     # Handle fallback case with estimated tokens
                                     LOGGER.debug(f"Found fallback usage data: {chunk}")
-                                    parts = chunk.replace("__USAGE_DATA_FALLBACK__", "").replace("__", "").split("__")
+                                    # Remove prefix and suffix properly
+                                    content = chunk[23:-2]  # Remove "__USAGE_DATA_FALLBACK__" (23 chars) and final "__" (2 chars)  
+                                    parts = content.split("__")
+                                    LOGGER.debug(f"Fallback parsing content: '{content}' -> parts: {parts}")
+                                    
                                     if len(parts) >= 2:
                                         estimated_output = int(parts[0])
                                         model_used = parts[1]
