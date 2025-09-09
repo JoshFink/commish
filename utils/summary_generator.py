@@ -46,12 +46,13 @@ Create a comprehensive weekly recap in the style of {character_choice} with the 
 
 2. **League Standings Update**: Briefly discuss current standings and playoff implications if relevant.
 
-3. **Matchup-by-Matchup Analysis**: For each game, include:
-   - Team records going into the game
-   - Projected vs actual final scores
-   - Key player performances with specific stats
-   - Notable strategic decisions (good pickups, start/sit decisions)
-   - Brief narrative about what happened and why
+3. **Complete Matchup-by-Matchup Analysis**: You MUST cover EVERY SINGLE matchup from the week. For each and every game, include:
+   - Team names and records going into the game
+   - Projected vs actual final scores (if available in the data)
+   - Key player performances with specific point totals
+   - Notable strategic decisions (good/bad pickups, start/sit decisions that worked or backfired)
+   - Brief narrative about what happened in each matchup and why one team won
+   - Do not skip any matchups - cover all games that occurred this week
 
 4. **Week Highlights**: 
    - Highest scoring team/player
@@ -62,6 +63,8 @@ Create a comprehensive weekly recap in the style of {character_choice} with the 
 5. **Trash Talk & Commentary**: Include trash talk at level {trash_talk_level} (1-10 scale) throughout, making it character-appropriate. Be entertaining and engaging while staying true to {character_choice}'s personality.
 
 Write this as an engaging, detailed recap that fantasy football commissioners would be proud to share with their league. Don't just list stats - tell the story of the week with personality and flair.
+
+IMPORTANT: Make sure to analyze and discuss EVERY matchup that occurred this week. Do not skip any games or teams - provide commentary on all matchups, even if some were less exciting than others.
 
 Here is the provided weekly fantasy summary: {summary}"""
     else:
