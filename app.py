@@ -88,8 +88,8 @@ def main():
         with st.sidebar.form(key='my_form'):
             if league_type == "ESPN":
                 st.text_input("LeagueID", key='LeagueID')
-                st.text_input("SWID", key='SWID')
-                st.text_input("ESPN_S2", key='ESPN2_Id')
+                st.text_input("SWID", key='SWID', value='{D392D3A1-E320-49D8-A66E-6D0F3E81F42A}')
+                st.text_input("ESPN_S2", key='ESPN2_Id', value='AEASaRdC%2BAe8Eop%2B2aNfcCeCZ%2FPFDhs2PXnoDtAIXENhz4zfIbfxnbqw5K%2Fqh0XJq1G9Rr2zHZDTD80z3bh38anzs8%2Brv82NZjSXVRQVsqVbt2hUHgHRN6QJ6ZC0I%2BPCoQ0ZMFZzFtahKMeWX2SYgRKXpWmg8eaVt0U5qYHen%2FLNmFeog0KhSzhcI8rZ2JlCT2Vm2WmOczjudQfMfbl%2B4i5%2FMQVV2CDZvjhIDbBrOQsAzI61dnknmSXZucBA7ZjaVxdparPU4BjNmwaV242dbzvT')
             elif league_type == "Yahoo":
                 # Client_ID and Secret from https://developer.yahoo.com/apps/
                 league_id = st.text_input("LeagueID", key='LeagueID')
