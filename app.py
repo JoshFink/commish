@@ -394,7 +394,7 @@ def main():
                                     # Display main table with custom styling
                                     st.dataframe(
                                         df,
-                                        use_container_width=True,
+                                        width='stretch',
                                         hide_index=True,
                                         column_config={
                                             "Rank": st.column_config.TextColumn("Rank", width="small"),
