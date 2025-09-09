@@ -80,6 +80,17 @@ An intelligent fantasy football assistant that generates creative weekly recaps 
 - **John Madden**: Classic football commentary with "BOOM!" and telestrator enthusiasm
 - **Dwight Schrute**: Beet farm analogies and intense competitive analysis
 - **Captain Jack Sparrow**: Pirate-themed adventure narratives about your league
+- **Gordon Ramsay**: Brutal honesty with British profanity about team performance
+- **Tony Stark**: Sarcastic genius billionaire analysis with tech references
+- **Shaquille O'Neal**: Big personality commentary with playful roasting and nicknames
+- **Charles Barkley**: Unfiltered opinions and hilarious hot takes about your league
+- **Ryan Reynolds**: Witty fourth-wall-breaking commentary with self-deprecating humor
+- **Samuel L. Jackson**: Intense, memorable quotes with that unmistakable attitude
+- **Snoop Dogg**: Laid-back, cool commentary with unique vocabulary and style
+- **Stone Cold Steve Austin**: WWE-style trash talk with "And that's the bottom line!"
+- **Morgan Freeman**: Dignified, profound narration that makes fantasy football epic
+- **Deadpool**: Breaking the fourth wall with irreverent humor and pop culture refs
+- **Joe Rogan**: Deep dive analysis with random tangents and "Have you ever tried..."
 - **Custom Characters**: Describe any persona for unique summaries
 
 ## 💰 Cost Management
