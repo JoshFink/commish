@@ -40,7 +40,9 @@ def generate_gpt4_summary_streaming(client, summary, character_choice, trash_tal
     if summary_format == "Detailed":
         instruction = f"""You will be provided a summary below containing the most recent weekly stats for a fantasy football league.
 
-Create an EPIC, comprehensive, and hilariously detailed weekly recap in the style of {character_choice}. This should be a masterpiece of fantasy football commentary - think ESPN highlight reel meets roast comedy special. Make it LONG, DETAILED, FUNNY, and SNARKY.
+CRITICAL LENGTH REQUIREMENT: You MUST write AT LEAST 1500 words. DO NOT write anything shorter than 1500 words. This is MANDATORY.
+
+Create an EPIC, comprehensive, and hilariously detailed weekly recap in the style of {character_choice}. This should be a masterpiece of fantasy football commentary - think ESPN highlight reel meets roast comedy special. Make it EXTREMELY LONG, DETAILED, FUNNY, and SNARKY.
 
 STRUCTURE YOUR RECAP AS FOLLOWS:
 
@@ -98,39 +100,49 @@ WRITING STYLE REQUIREMENTS:
 
 REMEMBER: This isn't just a summary - it's ENTERTAINMENT. Make it legendary.
 
+FINAL WARNING: If your response is under 1500 words, you have COMPLETELY FAILED. Write extensive content, add more jokes, expand every section with detailed commentary, and provide maximum entertainment value. DO NOT WRITE SHORT RESPONSES.
+
 Here is the provided weekly fantasy summary: {summary}"""
     else:
         # Classic format (existing)
         instruction = f"""You will be provided a summary below containing the most recent weekly stats for a fantasy football league.
 
-Create a hilarious and engaging weekly recap in the style of {character_choice}. This should be substantially longer, funnier, and more detailed than a typical summary.
+CRITICAL REQUIREMENT: You MUST write a MINIMUM of 800 words. DO NOT write anything shorter than 800 words. This is NON-NEGOTIABLE.
 
-YOUR MISSION:
-- Write 800-1200 words of pure entertainment
-- Channel {character_choice}'s personality with humor and wit
+Create a hilarious and engaging weekly recap in the style of {character_choice}. This needs to be SUBSTANTIALLY longer, funnier, and more detailed than a typical summary.
+
+MANDATORY LENGTH REQUIREMENTS:
+- MINIMUM 800 words - anything shorter is unacceptable
+- Target 1000-1200 words for ideal length
+- Write multiple paragraphs for each section
+- Expand every point with detailed commentary and humor
+- If you're under 800 words, ADD MORE CONTENT
+
+YOUR EXPANDED MISSION:
+- Channel {character_choice}'s personality with extensive humor and wit
 - Include trash talk at level {trash_talk_level}/10 (be appropriately ruthless)
-- Make this the most anticipated part of their league experience
+- Make this the most anticipated and entertaining part of their league experience
 
-CONTENT REQUIREMENTS:
-- Start with a memorable character introduction
-- Cover ALL the major storylines and matchups from the week  
-- Roast poor performances and celebrate great ones
-- Make jokes about team names, player choices, and league drama
-- Include specific stats but weave them into funny narratives
-- Add sports analogies, pop culture references, and witty observations
-- Create memorable one-liners and quotable moments
-- End with trash talk and predictions for next week
+DETAILED CONTENT REQUIREMENTS (EXPAND EACH):
+1. CHARACTER INTRODUCTION (100-150 words): Memorable, in-character opening that sets the tone
+2. WEEKLY OVERVIEW (150-200 words): Cover ALL major storylines, upsets, and drama with detailed commentary
+3. MATCHUP ANALYSIS (400-500 words): Go through EVERY SINGLE matchup with:
+   - Detailed play-by-play commentary for each game
+   - Specific roasting of poor performances and celebration of great ones
+   - Multiple jokes about team names, player choices, and strategies
+   - Stats woven into entertaining narratives with commentary
+4. HEROES AND VILLAINS (150-200 words): Extensive praise and roasting of performances
+5. PREDICTIONS AND TRASH TALK (100-150 words): Bold predictions and character-appropriate closing
 
-STYLE GUIDELINES:
-- Be SNARKY and HILARIOUS while staying true to {character_choice}
-- Don't just report stats - tell entertaining stories about what happened
-- Make fun of bad decisions and praise smart moves
-- Create dramatic tension around close games and mock blowouts
-- Use vivid descriptions and colorful language
-- Include thematic emojis that enhance the humor
-- Make every manager want to keep reading until the end
+MANDATORY STYLE EXPANSION:
+- Write LONG, detailed paragraphs - not brief summaries
+- Add extensive sports analogies, pop culture references, and witty observations
+- Create multiple memorable one-liners and quotable moments throughout
+- Use vivid descriptions and colorful language extensively
+- Include detailed storytelling for close games and blowouts
+- Add extensive character-based commentary on every major point
 
-REMEMBER: You're not just summarizing - you're ENTERTAINING. Make this recap so good that managers screenshot it and share it with friends. This should be comedy gold that brings the league together through laughter (and friendly roasting).
+ABSOLUTE REQUIREMENT: If your response is under 800 words, you have FAILED. Write more content, add more jokes, expand every section, and provide extensive entertainment value.
 
 Here is the provided weekly fantasy summary: {summary}"""
 
