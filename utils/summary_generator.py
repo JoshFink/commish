@@ -60,15 +60,35 @@ def generate_gpt4_summary_streaming(client, summary, character_choice, trash_tal
         
         # Extract and yield the generated message, capturing usage data
         usage_data = None
+        content_chunks = []
+        
         for chunk in response:
+            # Debug: Log chunk structure
+            LOGGER.debug(f"Chunk type: {type(chunk)}, has usage: {hasattr(chunk, 'usage')}")
+            
             # Check if this chunk contains usage information (final chunk)
             if hasattr(chunk, 'usage') and chunk.usage is not None:
                 usage_data = chunk.usage
-                # Yield usage data as a special marker
-                yield f"__USAGE_DATA__{usage_data.prompt_tokens},{usage_data.completion_tokens},{usage_data.total_tokens}__{model}__"
-            # Access 'content' directly since 'delta' is an object, not a dictionary
-            elif chunk.choices and hasattr(chunk.choices[0].delta, 'content') and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
+                LOGGER.debug(f"Usage data found: {usage_data}")
+            
+            # Process content chunks
+            if chunk.choices and hasattr(chunk.choices[0].delta, 'content') and chunk.choices[0].delta.content:
+                content = chunk.choices[0].delta.content
+                content_chunks.append(content)
+                yield content
+        
+        # After streaming is complete, yield usage data if available
+        if usage_data:
+            LOGGER.debug(f"Yielding usage data: prompt={usage_data.prompt_tokens}, completion={usage_data.completion_tokens}, total={usage_data.total_tokens}")
+            yield f"__USAGE_DATA__{usage_data.prompt_tokens},{usage_data.completion_tokens},{usage_data.total_tokens}__{model}__"
+        else:
+            # Fallback: If no usage data captured, log this for debugging
+            LOGGER.warning("No usage data captured from streaming response")
+            # Try to estimate tokens as fallback
+            total_content = ''.join(content_chunks)
+            estimated_output_tokens = len(total_content) // 4  # Rough estimate
+            LOGGER.debug(f"Fallback: estimated output tokens: {estimated_output_tokens}")
+            yield f"__USAGE_DATA_FALLBACK__{estimated_output_tokens}__{model}__"
 
     except Exception as e:
         error_str = str(e)

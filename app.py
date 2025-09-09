@@ -302,6 +302,7 @@ def main():
                             if chunk is not None:
                                 # Check if this chunk contains usage data
                                 if chunk.startswith("__USAGE_DATA__") and chunk.endswith("__"):
+                                    LOGGER.debug(f"Found usage data chunk: {chunk}")
                                     # Parse usage data: __USAGE_DATA__prompt,completion,total__model__
                                     parts = chunk.replace("__USAGE_DATA__", "").replace("__", "").split("__")
                                     if len(parts) >= 2:
@@ -319,6 +320,29 @@ def main():
                                                 "usage": UsageData(tokens[0], tokens[1], tokens[2]),
                                                 "model": model_used
                                             }
+                                            LOGGER.debug(f"Parsed usage info: {usage_info}")
+                                elif chunk.startswith("__USAGE_DATA_FALLBACK__") and chunk.endswith("__"):
+                                    # Handle fallback case with estimated tokens
+                                    LOGGER.debug(f"Found fallback usage data: {chunk}")
+                                    parts = chunk.replace("__USAGE_DATA_FALLBACK__", "").replace("__", "").split("__")
+                                    if len(parts) >= 2:
+                                        estimated_output = int(parts[0])
+                                        model_used = parts[1]
+                                        # Estimate input tokens from the instruction length
+                                        estimated_input = len(str(character_description) + str(trash_talk_level) + str(summary)) // 4
+                                        
+                                        class UsageData:
+                                            def __init__(self, prompt, completion, total):
+                                                self.prompt_tokens = int(prompt)
+                                                self.completion_tokens = int(completion)
+                                                self.total_tokens = int(total)
+                                        
+                                        usage_info = {
+                                            "usage": UsageData(estimated_input, estimated_output, estimated_input + estimated_output),
+                                            "model": model_used,
+                                            "estimated": True
+                                        }
+                                        LOGGER.debug(f"Created fallback usage info: {usage_info}")
                                 else:
                                     # Regular content chunk
                                     full_response += chunk  # Append each streamed chunk to the full response
@@ -334,6 +358,8 @@ def main():
                     if usage_info and "usage" in usage_info:
                         cost_info = calculate_cost(usage_info["usage"], usage_info["model"])
                         if "total_cost" in cost_info:
+                            # Check if this is estimated data
+                            is_estimated = usage_info.get("estimated", False)
                             st.success("✅ **Summary Generated Successfully!**")
                             
                             # Create cost breakdown display
@@ -349,6 +375,8 @@ def main():
                             # Show detailed breakdown
                             with st.expander("💳 **Cost Breakdown**"):
                                 st.write(f"**Model Used:** {usage_info['model']}")
+                                if is_estimated:
+                                    st.warning("⚠️ **Note:** Token counts are estimated (actual usage tracking unavailable)")
                                 st.write(f"**Input Cost:** ${cost_info['prompt_cost']:.6f} ({cost_info['prompt_tokens']:,} tokens)")
                                 st.write(f"**Output Cost:** ${cost_info['completion_cost']:.6f} ({cost_info['completion_tokens']:,} tokens)")
                                 
@@ -359,6 +387,10 @@ def main():
                                     savings_vs_gpt5 = (0.012 - cost_info['total_cost']) if cost_info['total_cost'] < 0.012 else 0
                                     if savings_vs_gpt5 > 0:
                                         st.info(f"💰 **You saved ~${savings_vs_gpt5:.4f}** compared to premium models!")
+                    else:
+                        # Fallback: Show a simple message if no usage data was captured
+                        LOGGER.warning("No usage info available for cost display")
+                        st.info("💡 **Summary generated successfully!** Cost tracking temporarily unavailable - trying to capture usage data in future versions.")
                     
                     # Optionally, provide the full response in a code block with a copy button
                     st.markdown("**Click the copy icon** 📋 below in top right corner to copy your summary and paste it wherever you see fit!")
