@@ -315,7 +315,7 @@ def generate_sleeper_summary(league_id):
             winner = teams[0]  # teams are sorted by points descending
             loser = teams[1]
             point_diff = round(winner[1] - loser[1], 2)
-            matchup_details += f"🏈 Matchup {matchup_id}: {winner[0]} ({round(winner[1], 2)}) defeated {loser[0]} ({round(loser[1], 2)}) by {point_diff} points\n"
+            matchup_details += f"• Matchup {matchup_id}: {winner[0]} ({round(winner[1], 2)}) defeated {loser[0]} ({round(loser[1], 2)}) by {point_diff} points\n"
 
     # Construct the summary string with proper formatting and line breaks
     summary = (
