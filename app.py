@@ -373,6 +373,9 @@ def main():
                                     # Create DataFrame for table display
                                     rankings = power_rankings_data["rankings"]
                                     
+                                    # Debug: Check number of teams
+                                    st.write(f"Debug: Processing {len(rankings)} teams")
+                                    
                                     # Prepare data for table
                                     table_data = []
                                     for team in rankings:
@@ -395,6 +398,7 @@ def main():
                                     st.dataframe(
                                         df,
                                         width='stretch',
+                                        height=600,  # Increase height to show all teams
                                         hide_index=True,
                                         column_config={
                                             "Rank": st.column_config.TextColumn("Rank", width="small"),
