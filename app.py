@@ -429,6 +429,8 @@ def main():
                                             st.markdown("**🔬 Oberon Mt. Power Rating**")
                                             st.caption("60% Avg Score, 20% High/Low, 20% Win %")
                                             st.write("*A balanced approach emphasizing consistent scoring performance with win rate consideration.*")
+                                            st.write("**Scale:** 8.0+ Elite | 6.0-7.9 Good | 4.0-5.9 Average | <4.0 Poor")
+                                            st.write("**Goal:** Higher scores indicate better overall team strength")
                                             st.write("")
                                             oberon_rankings = sorted(rankings, key=lambda x: x['oberon_rating'], reverse=True)
                                             for i, team in enumerate(oberon_rankings):
@@ -438,6 +440,8 @@ def main():
                                             st.markdown("**💎 Team Value Index**")
                                             st.caption("Points For/Against × Win %")
                                             st.write("*Measures efficiency by combining scoring differential with actual wins achieved.*")
+                                            st.write("**Scale:** 0.8+ Excellent | 0.6-0.79 Good | 0.4-0.59 Average | <0.4 Struggling")
+                                            st.write("**Goal:** Higher values show you're winning games efficiently relative to points")
                                             st.write("")
                                             tvi_rankings = sorted(rankings, key=lambda x: x['team_value_index'], reverse=True)
                                             for i, team in enumerate(tvi_rankings):
