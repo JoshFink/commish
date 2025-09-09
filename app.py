@@ -101,9 +101,9 @@ def main():
     - **ESPN**:
         - *League ID*: [Find it here](https://support.espn.com/hc/en-us/articles/360045432432-League-ID).
         - *SWID and ESPN_S2*: Use this [Chrome extension](https://chrome.google.com/webstore/detail/espn-private-league-key-a/bakealnpgdijapoiibbgdbogehhmaopn) or follow [manual steps](https://www.gamedaybot.com/help/espn_s2-and-swid/).
-    - **Yahoo**:
+    <!-- - **Yahoo**:
         - *League ID*: Navigate to Yahoo Fantasy Sports → Click your league → Mouse over **League**, click **Settings**. The League ID number is listed first.
-        - *Authenticate*: Follow the prompt to enter your authentication code. Then fill in the character description and trash talk levels as your normally would.
+        - *Authenticate*: Follow the prompt to enter your authentication code. Then fill in the character description and trash talk levels as your normally would. -->
     - **Sleeper**:
         - *League ID*: [Find it here](https://support.sleeper.com/en/articles/4121798-how-do-i-find-my-league-id). 
     3. **Hit "🤖 Generate AI Summary"** to get your weekly summary.
@@ -225,7 +225,7 @@ def main():
             elif league_type == "Sleeper":
                 st.text_input("LeagueID", key='LeagueID', value='1257120279386148864')
             
-            st.text_input("Character Description", key='Character Description', placeholder="Dwight Schrute", help= "Describe a persona for the AI to adopt. E.g. 'Dwight Schrute' or 'A very drunk Captain Jack Sparrow'")
+            st.text_input("Character Description", key='Character Description', value="John Madden", help= "Describe a persona for the AI to adopt. E.g. 'Dwight Schrute' or 'A very drunk Captain Jack Sparrow'")
             st.slider("Trash Talk Level", 1, 10, key='Trash Talk Level', value=5, help="Scale of 1 to 10, where 1 is friendly banter and 10 is more extreme trash talk")
             
             # Model selection dropdown with pricing information
