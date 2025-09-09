@@ -204,8 +204,8 @@ def create_footer_content(styles, league_name="Fantasy Football League", week_nu
     story.append(create_decorative_line())
     story.append(Spacer(1, 12))
     
-    # Footer text with league name and week
-    footer_text = f"{league_name} | {week_number}, {current_year}"
+    # Footer text with league name, year, and week
+    footer_text = f"{league_name} {current_year} | {week_number}"
     story.append(Paragraph(footer_text, styles['Footer']))
     
     return story
