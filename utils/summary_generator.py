@@ -40,39 +40,99 @@ def generate_gpt4_summary_streaming(client, summary, character_choice, trash_tal
     if summary_format == "Detailed":
         instruction = f"""You will be provided a summary below containing the most recent weekly stats for a fantasy football league.
 
-Create a comprehensive weekly recap in the style of {character_choice} with the following detailed structure:
+Create an EPIC, comprehensive, and hilariously detailed weekly recap in the style of {character_choice}. This should be a masterpiece of fantasy football commentary - think ESPN highlight reel meets roast comedy special. Make it LONG, DETAILED, FUNNY, and SNARKY.
 
-1. **Week Overview**: Start with an engaging introduction about the week, mentioning any major storylines, close games, or blowouts.
+STRUCTURE YOUR RECAP AS FOLLOWS:
 
-2. **League Standings Update**: Briefly discuss current standings and playoff implications if relevant.
+1. **DRAMATIC WEEK OPENING** (2-3 paragraphs): 
+   - Start with a theatrical introduction about the week's chaos
+   - Set the scene like you're narrating a sports documentary
+   - Mention the biggest storylines, upsets, and drama
+   - Use vivid metaphors and colorful language
 
-3. **Complete Matchup-by-Matchup Analysis**: You MUST cover EVERY SINGLE matchup from the week. For each and every game, include:
-   - Team names and records going into the game
-   - Projected vs actual final scores (if available in the data)
-   - Key player performances with specific point totals
-   - Notable strategic decisions (good/bad pickups, start/sit decisions that worked or backfired)
-   - Brief narrative about what happened in each matchup and why one team won
-   - Do not skip any matchups - cover all games that occurred this week
+2. **LEAGUE POWER RANKINGS ROAST** (1-2 paragraphs):
+   - Discuss current standings with BRUTAL honesty
+   - Mock the pretenders, praise the contenders
+   - Make predictions and throw shade at playoff hopes
+   - Be SNARKY about team management decisions
 
-4. **Week Highlights**: 
-   - Highest scoring team/player
-   - Biggest disappointments or busts
-   - Best waiver wire pickups that paid off
-   - Any injuries or other notable events
+3. **MATCHUP-BY-MATCHUP DESTRUCTION** (This is the MAIN EVENT - be thorough):
+   For EVERY SINGLE matchup, provide:
+   - A creative nickname/storyline for each game ("The Bloodbath," "David vs Goliath," etc.)
+   - Detailed play-by-play style commentary on what happened
+   - ROAST poor performances mercilessly (within trash talk level {trash_talk_level})
+   - Celebrate great performances with over-the-top praise
+   - Make jokes about team names, player choices, and strategies
+   - Include specific point totals and what they mean
+   - Create dramatic narratives around close games and blowouts
+   - Don't just report scores - tell the STORY of each battle
 
-5. **Trash Talk & Commentary**: Include trash talk at level {trash_talk_level} (1-10 scale) throughout, making it character-appropriate. Be entertaining and engaging while staying true to {character_choice}'s personality.
+4. **HEROES AND VILLAINS OF THE WEEK** (2-3 paragraphs):
+   - Crown the week's MVP with fanfare
+   - Publicly shame the biggest busts and disappointments  
+   - Highlight clutch performances and epic failures
+   - Make it personal and hilarious
 
-Write this as an engaging, detailed recap that fantasy football commissioners would be proud to share with their league. Don't just list stats - tell the story of the week with personality and flair.
+5. **THE WEEKLY AWARDS CEREMONY**:
+   - "Manager of the Week" (with sarcastic reasoning)
+   - "Worst Decision Award" (roast bad start/sit choices)
+   - "Luckiest SOB Award" 
+   - "Most Disappointing Roster Award"
+   - Be creative with categories and RUTHLESS with commentary
 
-IMPORTANT: Make sure to analyze and discuss EVERY matchup that occurred this week. Do not skip any games or teams - provide commentary on all matchups, even if some were less exciting than others.
+6. **TRASH TALK AND PREDICTIONS**:
+   - Unleash appropriate trash talk (level {trash_talk_level}/10)
+   - Make bold predictions for next week
+   - Call out managers by name for their successes/failures
+   - End with a memorable one-liner or challenge
+
+WRITING STYLE REQUIREMENTS:
+- Write 1500-2500 words minimum - make it SUBSTANTIAL
+- Channel {character_choice} personality throughout
+- Use humor, sarcasm, and wit liberally
+- Include sports analogies and pop culture references
+- Be entertaining AF - this should be the highlight of their week
+- Make managers want to share this with everyone
+- Don't just list stats - weave them into compelling narratives
+- Be detailed enough that someone who didn't watch can visualize everything
+
+REMEMBER: This isn't just a summary - it's ENTERTAINMENT. Make it legendary.
 
 Here is the provided weekly fantasy summary: {summary}"""
     else:
         # Classic format (existing)
-        instruction = f"You will be provided a summary below containing the most recent weekly stats for a fantasy football league. \
-        Create a weekly recap in the style of {character_choice}. Do not simply repeat every single stat verbatim - be creative while calling out stats and being on theme. You should include trash talk with a level of {trash_talk_level} based on a scale of 1-10 (1 being no trash talk, 10 being excessive hardcore trash talk); feel free to make fun of (or praise) team names and performances, and add a touch of humor related to the chosen character. \
-        Keep your summary concise enough (under 800 characters) as to not overwhelm the user with stats but still engaging, funny, thematic, and insightful. You can sprinkle in a few emojis if they are thematic. Only respond in character and do not reply with anything other than your recap. Begin by introducing \
-        your character. Here is the provided weekly fantasy summary: {summary}"
+        instruction = f"""You will be provided a summary below containing the most recent weekly stats for a fantasy football league.
+
+Create a hilarious and engaging weekly recap in the style of {character_choice}. This should be substantially longer, funnier, and more detailed than a typical summary.
+
+YOUR MISSION:
+- Write 800-1200 words of pure entertainment
+- Channel {character_choice}'s personality with humor and wit
+- Include trash talk at level {trash_talk_level}/10 (be appropriately ruthless)
+- Make this the most anticipated part of their league experience
+
+CONTENT REQUIREMENTS:
+- Start with a memorable character introduction
+- Cover ALL the major storylines and matchups from the week  
+- Roast poor performances and celebrate great ones
+- Make jokes about team names, player choices, and league drama
+- Include specific stats but weave them into funny narratives
+- Add sports analogies, pop culture references, and witty observations
+- Create memorable one-liners and quotable moments
+- End with trash talk and predictions for next week
+
+STYLE GUIDELINES:
+- Be SNARKY and HILARIOUS while staying true to {character_choice}
+- Don't just report stats - tell entertaining stories about what happened
+- Make fun of bad decisions and praise smart moves
+- Create dramatic tension around close games and mock blowouts
+- Use vivid descriptions and colorful language
+- Include thematic emojis that enhance the humor
+- Make every manager want to keep reading until the end
+
+REMEMBER: You're not just summarizing - you're ENTERTAINING. Make this recap so good that managers screenshot it and share it with friends. This should be comedy gold that brings the league together through laughter (and friendly roasting).
+
+Here is the provided weekly fantasy summary: {summary}"""
 
     # Create the messages array
     messages = [
