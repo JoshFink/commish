@@ -1,4 +1,4 @@
-# 🏈 Commish.ai - Fantasy Football AI Commissioner
+# 🏈 Fantasy Football AI Commissioner
 
 An intelligent fantasy football assistant that generates creative weekly recaps and summaries using AI. Transform your league's weekly performance data into entertaining, character-driven narratives that bring your fantasy football experience to life.
 
