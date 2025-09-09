@@ -1,3 +1,6 @@
+# Import warning suppression first
+import suppress_warnings
+
 import streamlit as st
 from openai import OpenAI
 from streamlit.logger import get_logger
@@ -11,18 +14,8 @@ import json
 import tempfile
 from requests.auth import HTTPBasicAuth
 import time
-import os
 import shutil
 from datetime import datetime, timedelta
-import logging
-import warnings
-
-# Suppress warnings from third-party libraries
-warnings.filterwarnings("ignore", category=SyntaxWarning)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-# Suppress PIL debug logging
-logging.getLogger('PIL').setLevel(logging.WARNING)
 
 LOGGER = get_logger(__name__)
 
