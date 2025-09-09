@@ -275,6 +275,33 @@ class PowerRankingCalculator:
         return rankings
 
 
+def get_sleeper_power_rankings_data(league_id: str) -> Dict[str, Any]:
+    """
+    Get raw power rankings data for a Sleeper league.
+    
+    Args:
+        league_id: Sleeper league ID
+    
+    Returns:
+        Dictionary containing rankings data and metadata
+    """
+    try:
+        calculator = PowerRankingCalculator(league_id)
+        rankings = calculator.generate_power_rankings()
+        
+        if not rankings:
+            return {"error": "Unable to generate power rankings - insufficient data."}
+        
+        return {
+            "rankings": rankings,
+            "current_week": calculator.current_week,
+            "league_averages": calculator.league_averages
+        }
+        
+    except Exception as e:
+        return {"error": f"Error generating power rankings: {str(e)}"}
+
+
 def generate_sleeper_power_rankings(league_id: str) -> str:
     """
     Generate formatted power rankings for a Sleeper league.

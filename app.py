@@ -8,7 +8,7 @@ from utils import summary_generator
 from utils.helper import check_availability
 from utils.model_config import get_flattened_models, estimate_cost, get_model_recommendation, calculate_cost
 from utils.pdf_generator import generate_pdf_from_summary, get_filename
-from utils.power_ranking_generator import generate_sleeper_power_rankings
+from utils.power_ranking_generator import generate_sleeper_power_rankings, get_sleeper_power_rankings_data
 import traceback
 import requests
 import json
@@ -17,6 +17,7 @@ from requests.auth import HTTPBasicAuth
 import time
 import shutil
 from datetime import datetime, timedelta
+import pandas as pd
 
 LOGGER = get_logger(__name__)
 
@@ -329,10 +330,20 @@ def main():
         st.subheader("📊 Statistical Power Rankings")
         st.write("Generate objective power rankings based on statistical analysis (no AI personality)")
         
-        power_rankings_button = st.button(
-            label='📊 Calculate Power Rankings',
-            help="Generate statistical power rankings based on wins, points, consistency, and recent form"
-        )
+        # View selection
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            view_type = st.selectbox(
+                "Display Format",
+                ["📋 List View", "📊 Table View"],
+                help="Choose how to display the power rankings"
+            )
+        
+        with col2:
+            power_rankings_button = st.button(
+                label='📊 Calculate Power Rankings',
+                help="Generate statistical power rankings based on wins, points, consistency, and recent form"
+            )
         
         # Handling Power Rankings
         if power_rankings_button:
@@ -343,10 +354,88 @@ def main():
                 else:
                     try:
                         with st.spinner('Calculating power rankings...'):
-                            power_rankings_result = generate_sleeper_power_rankings(league_id)
-                        
-                        st.success("Power rankings generated successfully!")
-                        st.text(power_rankings_result)
+                            if view_type == "📋 List View":
+                                power_rankings_result = generate_sleeper_power_rankings(league_id)
+                                st.success("Power rankings generated successfully!")
+                                st.text(power_rankings_result)
+                            else:  # Table View
+                                power_rankings_data = get_sleeper_power_rankings_data(league_id)
+                                
+                                if "error" in power_rankings_data:
+                                    st.error(power_rankings_data["error"])
+                                else:
+                                    st.success("Power rankings generated successfully!")
+                                    
+                                    # Display header
+                                    current_week = power_rankings_data["current_week"]
+                                    st.markdown(f"### 🏆 Power Rankings - After Week {current_week}")
+                                    
+                                    # Create DataFrame for table display
+                                    rankings = power_rankings_data["rankings"]
+                                    
+                                    # Prepare data for table
+                                    table_data = []
+                                    for team in rankings:
+                                        table_data.append({
+                                            "Rank": f"#{team['power_rank']}",
+                                            "Team": team['team_name'],
+                                            "Record": team['record'],
+                                            "Power Score": f"{team['comprehensive_score']:.3f}",
+                                            "Avg Points": f"{team['avg_points_for']:.1f}",
+                                            "Point Diff": f"{team['avg_point_differential']:+.1f}",
+                                            "Win %": f"{team['win_percentage']:.1%}",
+                                            "Recent Form": team['recent_form'],
+                                            "High Score": f"{team['highest_score']:.1f}",
+                                            "Low Score": f"{team['lowest_score']:.1f}"
+                                        })
+                                    
+                                    df = pd.DataFrame(table_data)
+                                    
+                                    # Display main table with custom styling
+                                    st.dataframe(
+                                        df,
+                                        use_container_width=True,
+                                        hide_index=True,
+                                        column_config={
+                                            "Rank": st.column_config.TextColumn("Rank", width="small"),
+                                            "Team": st.column_config.TextColumn("Team", width="medium"),
+                                            "Record": st.column_config.TextColumn("Record", width="small"),
+                                            "Power Score": st.column_config.TextColumn("Power Score", width="medium"),
+                                            "Avg Points": st.column_config.TextColumn("Avg Points", width="medium"),
+                                            "Point Diff": st.column_config.TextColumn("Point Diff", width="medium"),
+                                            "Win %": st.column_config.TextColumn("Win %", width="small"),
+                                            "Recent Form": st.column_config.TextColumn("Recent Form", width="medium"),
+                                            "High Score": st.column_config.TextColumn("High Score", width="medium"),
+                                            "Low Score": st.column_config.TextColumn("Low Score", width="medium")
+                                        }
+                                    )
+                                    
+                                    # Display methodology and alternative rankings
+                                    with st.expander("📋 Ranking Methodology & Alternative Rankings"):
+                                        st.markdown("**Power Score Breakdown:**")
+                                        st.markdown("• 30% Win Percentage (managerial skill)")
+                                        st.markdown("• 25% Scoring Average (offensive production)")  
+                                        st.markdown("• 20% Point Differential (dominance)")
+                                        st.markdown("• 15% Recent Form (momentum)")
+                                        st.markdown("• 10% Consistency (reliability)")
+                                        
+                                        st.markdown("---")
+                                        
+                                        col1, col2 = st.columns(2)
+                                        
+                                        with col1:
+                                            st.markdown("**🔬 Oberon Mt. Power Rating**")
+                                            st.caption("60% Avg Score, 20% High/Low, 20% Win %")
+                                            oberon_rankings = sorted(rankings, key=lambda x: x['oberon_rating'], reverse=True)
+                                            for i, team in enumerate(oberon_rankings[:5]):
+                                                st.text(f"{i+1}. {team['team_name']}: {team['oberon_rating']:.2f}")
+                                        
+                                        with col2:
+                                            st.markdown("**💎 Team Value Index**")
+                                            st.caption("Points For/Against × Win %")
+                                            tvi_rankings = sorted(rankings, key=lambda x: x['team_value_index'], reverse=True)
+                                            for i, team in enumerate(tvi_rankings[:5]):
+                                                st.text(f"{i+1}. {team['team_name']}: {team['team_value_index']:.3f}")
                         
                     except Exception as e:
                         st.error(f"Error generating power rankings: {str(e)}")
