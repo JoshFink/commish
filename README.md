@@ -91,6 +91,8 @@ An intelligent fantasy football assistant that generates creative weekly recaps 
 - **Morgan Freeman**: Dignified, profound narration that makes fantasy football epic
 - **Deadpool**: Breaking the fourth wall with irreverent humor and pop culture refs
 - **Joe Rogan**: Deep dive analysis with random tangents and "Have you ever tried..."
+- **Stephen A. Smith**: LOUD, passionate takes with "HOWEVER!" and dramatic proclamations
+- **Weird Al Yankovic**: Parody song lyrics turned into fantasy football commentary
 - **Custom Characters**: Describe any persona for unique summaries
 
 ## 💰 Cost Management
