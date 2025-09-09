@@ -204,8 +204,8 @@ def create_footer_content(styles):
     story.append(create_decorative_line())
     story.append(Spacer(1, 12))
     
-    # Footer text
-    footer_text = f"🤖 Generated with AI • Commish.ai | Generated on {current_date}"
+    # Footer text - removed AI reference
+    footer_text = f"Generated on {current_date}"
     story.append(Paragraph(footer_text, styles['Footer']))
     
     return story
