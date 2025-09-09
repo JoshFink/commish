@@ -1,7 +1,7 @@
 espn-api==0.45.1
 openai==1.107.0
 pytz==2025.2
-yfpy==13.0.0
+yfpy==16.0.3
 sleeper-api-wrapper==1.1.0
 streamlit==1.49.1
 httpx==0.28.1

@@ -14,6 +14,15 @@ import time
 import os
 import shutil
 from datetime import datetime, timedelta
+import logging
+import warnings
+
+# Suppress warnings from third-party libraries
+warnings.filterwarnings("ignore", category=SyntaxWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+# Suppress PIL debug logging
+logging.getLogger('PIL').setLevel(logging.WARNING)
 
 LOGGER = get_logger(__name__)
 
@@ -153,7 +162,7 @@ def main():
             st.markdown(summary_data['content'])
 
     with st.sidebar:
-        st.sidebar.image('./logo.png', use_container_width=True)
+        st.sidebar.image('./logo.png', width='stretch')
         is_available, today = check_availability()
         if is_available:
             st.success(f"Today is {today}. The most recent week is completed and a recap is available.")
@@ -535,7 +544,7 @@ def main():
                                 file_name=filename,
                                 mime="application/pdf",
                                 help="Click to download your fantasy football recap as a PDF",
-                                use_container_width=True
+                                width='stretch'
                             )
                             st.success("✅ PDF ready for download!")
                         
