@@ -4,6 +4,7 @@ from streamlit.logger import get_logger
 from utils import summary_generator
 from utils.helper import check_availability
 from utils.model_config import get_flattened_models, estimate_cost, get_model_recommendation, calculate_cost
+from utils.pdf_generator import generate_pdf_from_summary, get_filename
 import traceback
 import requests
 import json
@@ -443,8 +444,53 @@ def main():
                         LOGGER.warning("No usage info available for cost display")
                         st.info("💡 **Summary generated successfully!** Cost tracking temporarily unavailable - trying to capture usage data in future versions.")
                     
-                    # Optionally, provide the full response in a code block with a copy button
-                    st.markdown("**Click the copy icon** 📋 below in top right corner to copy your summary and paste it wherever you see fit!")
+                    # PDF Export Section
+                    st.markdown("---")
+                    col1, col2 = st.columns([3, 1])
+                    
+                    with col1:
+                        st.markdown("**📄 Export Options**")
+                        st.markdown("Save your recap as a beautiful PDF or copy the text below:")
+                    
+                    with col2:
+                        # Generate PDF when button is clicked
+                        if st.button("🎯 Export PDF", key="export_pdf", help="Generate a beautifully formatted PDF version of your recap"):
+                            try:
+                                with st.spinner("🎨 Creating your beautiful PDF..."):
+                                    # Generate PDF
+                                    pdf_bytes = generate_pdf_from_summary(
+                                        summary_content=full_response,
+                                        character=character_description,
+                                        league_name="Fantasy Football League",  # Could be made configurable
+                                        week_number="Week Recap",  # Could be extracted from data
+                                        summary_format=summary_format,
+                                        trash_talk_level=trash_talk_level
+                                    )
+                                    
+                                    # Generate filename
+                                    filename = get_filename(
+                                        league_name="Fantasy Football League",
+                                        week_number="Week_Recap", 
+                                        character=character_description
+                                    )
+                                    
+                                    # Provide download button
+                                    st.download_button(
+                                        label="📥 Download PDF",
+                                        data=pdf_bytes,
+                                        file_name=filename,
+                                        mime="application/pdf",
+                                        help="Click to download your fantasy football recap as a PDF"
+                                    )
+                                    
+                                    st.success("✅ PDF generated successfully! Click the download button above.")
+                                    
+                            except Exception as e:
+                                st.error(f"❌ Error generating PDF: {str(e)}")
+                                LOGGER.error(f"PDF generation error: {str(e)}")
+                    
+                    # Text copy section
+                    st.markdown("**Click the copy icon** 📋 below in top right corner to copy your summary text:")
                     st.code(full_response, language="")
                 
                 except Exception as e:
