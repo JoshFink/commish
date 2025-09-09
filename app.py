@@ -55,15 +55,29 @@ def get_openai_client():
 def check_authentication():
     """Check if user is authenticated with 24-hour session persistence"""
     
+    # Initialize session state keys if they don't exist
+    if 'authenticated' not in st.session_state:
+        st.session_state['authenticated'] = False
+    if 'auth_timestamp' not in st.session_state:
+        st.session_state['auth_timestamp'] = None
+    
     # Check if user is already authenticated and session is valid
-    if 'authenticated' in st.session_state and 'auth_timestamp' in st.session_state:
-        auth_time = datetime.fromisoformat(st.session_state['auth_timestamp'])
-        if datetime.now() - auth_time < timedelta(hours=24):
-            return True
-        else:
-            # Session expired, clear authentication
+    if st.session_state['authenticated'] and st.session_state['auth_timestamp']:
+        try:
+            auth_time = datetime.fromisoformat(st.session_state['auth_timestamp'])
+            time_diff = datetime.now() - auth_time
+            if time_diff < timedelta(hours=24):
+                # Debug: show session info in sidebar (remove this after testing)
+                # st.sidebar.info(f"Session valid. Time remaining: {timedelta(hours=24) - time_diff}")
+                return True
+            else:
+                # Session expired, clear authentication
+                st.session_state['authenticated'] = False
+                st.session_state['auth_timestamp'] = None
+        except (ValueError, TypeError) as e:
+            # Invalid timestamp, clear authentication
             st.session_state['authenticated'] = False
-            st.session_state.pop('auth_timestamp', None)
+            st.session_state['auth_timestamp'] = None
     
     # Show login form
     st.title("🏈 Fantasy Football AI Commissioner")
@@ -73,9 +87,16 @@ def check_authentication():
     
     if st.button("Login", key="auth_login"):
         if password == st.secrets["APP_PASSWORD"]:
+            # Set authentication state
             st.session_state['authenticated'] = True
             st.session_state['auth_timestamp'] = datetime.now().isoformat()
+            
+            # Show success message
             st.success("Authentication successful! Redirecting...")
+            
+            # Force a rerun to refresh the page
+            import time
+            time.sleep(0.1)  # Small delay to ensure state is saved
             st.rerun()
         else:
             st.error("Incorrect password. Please try again.")
