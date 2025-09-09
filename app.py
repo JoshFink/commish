@@ -384,7 +384,6 @@ def main():
                                             "Avg Points": f"{team['avg_points_for']:.1f}",
                                             "Point Diff": f"{team['avg_point_differential']:+.1f}",
                                             "Win %": f"{team['win_percentage']:.1%}",
-                                            "Recent Form": team['recent_form'],
                                             "High Score": f"{team['highest_score']:.1f}",
                                             "Low Score": f"{team['lowest_score']:.1f}"
                                         })
@@ -408,7 +407,6 @@ def main():
                                             "Avg Points": st.column_config.TextColumn("Avg Points", width=75),
                                             "Point Diff": st.column_config.TextColumn("Point Diff", width=75),
                                             "Win %": st.column_config.TextColumn("Win %", width=60),
-                                            "Recent Form": st.column_config.TextColumn("Recent Form", width=85),
                                             "High Score": st.column_config.TextColumn("High Score", width=75),
                                             "Low Score": st.column_config.TextColumn("Low Score", width=75)
                                         }
