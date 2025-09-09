@@ -317,28 +317,31 @@ def generate_sleeper_summary(league_id):
             point_diff = round(winner[1] - loser[1], 2)
             matchup_details += f"🏈 Matchup {matchup_id}: {winner[0]} ({round(winner[1], 2)}) defeated {loser[0]} ({round(loser[1], 2)}) by {point_diff} points\n"
 
-    # Construct the summary string with modern formatting
+    # Construct the summary string with proper formatting and line breaks
     summary = (
-        f"🏆 **WEEK {week} FANTASY RECAP**\n\n"
+        f"🏆 WEEK {week} FANTASY RECAP\n"
+        f"{'='*50}\n\n"
         
-        f"⭐ **TOP PERFORMER**: {highest_scoring_team_name} with {round(highest_scoring_team_score,2)} points\n\n"
+        f"⭐ TOP PERFORMER\n"
+        f"{highest_scoring_team_name} with {round(highest_scoring_team_score,2)} points\n\n"
         
-        f"📊 **LEAGUE STANDINGS - TOP 3**:\n"
+        f"📊 LEAGUE STANDINGS - TOP 3\n"
         f"🥇 {top_3_teams_result[0][0]} - {top_3_teams_result[0][3]} points ({top_3_teams_result[0][1]}W-{top_3_teams_result[0][2]}L)\n"
         f"🥈 {top_3_teams_result[1][0]} - {top_3_teams_result[1][3]} points ({top_3_teams_result[1][1]}W-{top_3_teams_result[1][2]}L)\n"
         f"🥉 {top_3_teams_result[2][0]} - {top_3_teams_result[2][3]} points ({top_3_teams_result[2][1]}W-{top_3_teams_result[2][2]}L)\n\n"
         
-        f"🌟 **PLAYER HIGHLIGHTS**:\n"
+        f"🌟 PLAYER HIGHLIGHTS\n"
         f"• Best Player: {highest_scoring_player_week} with {weekly_score} points (Team: {highest_scoring_player_team_week})\n"
         f"• Worst Starter: {lowest_scoring_starter} with {lowest_starter_score} points (Team: {lowest_scoring_starter_team})\n"
         f"• Best Benched: {highest_scoring_benched_player} with {highest_benched_score} points (Team: {highest_scoring_benched_player_team})\n\n"
         
-        f"🏈 **ALL MATCHUPS - WEEK {week}**:\n{matchup_details}\n"
+        f"🏈 ALL MATCHUPS - WEEK {week}\n"
+        f"{matchup_details}\n"
         
-        f"📈 **WEEK STATS**:\n"
+        f"📈 WEEK STATS\n"
         f"💥 Biggest Blowout: {blowout_teams[0]} vs {blowout_teams[1]} (Point Differential: {round(point_differential_blowout, 2)})\n"
         f"⚡ Closest Match: {close_teams[0]} vs {close_teams[1]} (Point Differential: {round(point_differential_close, 2)})\n"
-        f"🔥 Hottest Streak: {hottest_streak_team} with a {longest_streak} game win streak"
+        f"🔥 Hottest Streak: {hottest_streak_team} with a {longest_streak} game win streak\n"
     )
     LOGGER.info(f"Sleeper Summary Generated: \n{summary}")
 
