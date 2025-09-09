@@ -353,7 +353,7 @@ def generate_sleeper_power_rankings(league_id: str) -> str:
         oberon_rankings = sorted(rankings, key=lambda x: x['oberon_rating'], reverse=True)
         output.append("Oberon Mt. Power Rating (60% Avg Score, 20% High/Low, 20% Win %):")
         output.append("A balanced approach emphasizing consistent scoring performance with win rate consideration.")
-        output.append("Scale: 8.0+ Elite | 6.0-7.9 Good | 4.0-5.9 Average | <4.0 Poor")
+        output.append("Scale: 11.0+ Elite | 9.0-10.9 Good | 7.0-8.9 Average | <7.0 Poor")
         output.append("Goal: Higher scores indicate better overall team strength")
         for i, team in enumerate(oberon_rankings):
             output.append(f"  {i+1}. {team['team_name']}: {team['oberon_rating']:.2f}")

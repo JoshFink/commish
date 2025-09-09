@@ -429,7 +429,7 @@ def main():
                                             st.markdown("**🔬 Oberon Mt. Power Rating**")
                                             st.caption("60% Avg Score, 20% High/Low, 20% Win %")
                                             st.write("*A balanced approach emphasizing consistent scoring performance with win rate consideration.*")
-                                            st.write("**Scale:** 8.0+ Elite | 6.0-7.9 Good | 4.0-5.9 Average | <4.0 Poor")
+                                            st.write("**Scale:** 11.0+ Elite | 9.0-10.9 Good | 7.0-8.9 Average | <7.0 Poor")
                                             st.write("**Goal:** Higher scores indicate better overall team strength")
                                             st.write("")
                                             oberon_rankings = sorted(rankings, key=lambda x: x['oberon_rating'], reverse=True)
