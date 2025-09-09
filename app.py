@@ -3,6 +3,7 @@ from openai import OpenAI
 from streamlit.logger import get_logger
 from utils import summary_generator
 from utils.helper import check_availability
+from utils.model_config import get_flattened_models, estimate_cost, get_model_recommendation, calculate_cost
 import traceback
 import requests
 import json
@@ -189,6 +190,30 @@ def main():
             
             st.text_input("Character Description", key='Character Description', placeholder="Dwight Schrute", help= "Describe a persona for the AI to adopt. E.g. 'Dwight Schrute' or 'A very drunk Captain Jack Sparrow'")
             st.slider("Trash Talk Level", 1, 10, key='Trash Talk Level', value=5, help="Scale of 1 to 10, where 1 is friendly banter and 10 is more extreme trash talk")
+            
+            # Model selection dropdown with pricing information
+            model_options = get_flattened_models()
+            selected_model_display = st.selectbox(
+                "AI Model", 
+                options=[option[0] for option in model_options],
+                index=1,  # Default to gpt-4o-mini (index 1)
+                key='selected_model_display',
+                help="Choose the AI model for generating your summary. GPT-4o Mini offers the best balance of creativity and cost for fantasy football summaries."
+            )
+            
+            # Extract the actual model ID from the selected display option
+            selected_model_id = next(option[1] for option in model_options if option[0] == selected_model_display)
+            
+            # Show model recommendation badge
+            recommendation = get_model_recommendation(selected_model_id)
+            if recommendation["badge"]:
+                st.caption(f"{recommendation['badge']} - {recommendation['reason']}")
+            
+            # Show estimated cost for typical summary
+            estimated_cost_info = estimate_cost("Sample fantasy football league summary with stats and team information", 800, selected_model_id)
+            if "estimated_total_cost" in estimated_cost_info:
+                st.caption(f"💰 Estimated cost: ~${estimated_cost_info['estimated_total_cost']:.4f} for typical summary")
+            
             submit_button = st.form_submit_button(label='🤖 Generate AI Summary')
 
     
@@ -262,26 +287,78 @@ def main():
                         return
                     
                     gpt4_summary_stream = summary_generator.generate_gpt4_summary_streaming(
-                        openai_client, summary, character_description, trash_talk_level
+                        openai_client, summary, character_description, trash_talk_level, selected_model_id
                     )
                     LOGGER.debug(f"Generator object initialized: {gpt4_summary_stream}")
                     
                     with st.chat_message("Commish", avatar="🤖"):
                         message_placeholder = st.empty()  # Placeholder for streamed message
                         full_response = ""  # Variable to store the full response as it streams
+                        usage_info = None  # Store usage data for cost calculation
                 
-                        # Iterate over the generator streaming GPT-4 responses
+                        # Iterate over the generator streaming responses
                         for chunk in gpt4_summary_stream:
-                            # Ensure that 'chunk' is not None before concatenating
+                            # Ensure that 'chunk' is not None before processing
                             if chunk is not None:
-                                full_response += chunk  # Append each streamed chunk to the full response
-                                message_placeholder.markdown(full_response + "▌")  # Display partial message with a cursor-like symbol
-                                LOGGER.debug(f"Received chunk: {chunk}")  # Log each chunk for debugging
+                                # Check if this chunk contains usage data
+                                if chunk.startswith("__USAGE_DATA__") and chunk.endswith("__"):
+                                    # Parse usage data: __USAGE_DATA__prompt,completion,total__model__
+                                    parts = chunk.replace("__USAGE_DATA__", "").replace("__", "").split("__")
+                                    if len(parts) >= 2:
+                                        tokens = parts[0].split(",")
+                                        model_used = parts[1]
+                                        if len(tokens) == 3:
+                                            # Create usage object-like structure
+                                            class UsageData:
+                                                def __init__(self, prompt, completion, total):
+                                                    self.prompt_tokens = int(prompt)
+                                                    self.completion_tokens = int(completion)
+                                                    self.total_tokens = int(total)
+                                            
+                                            usage_info = {
+                                                "usage": UsageData(tokens[0], tokens[1], tokens[2]),
+                                                "model": model_used
+                                            }
+                                else:
+                                    # Regular content chunk
+                                    full_response += chunk  # Append each streamed chunk to the full response
+                                    message_placeholder.markdown(full_response + "▌")  # Display partial message with a cursor-like symbol
+                                    LOGGER.debug(f"Received chunk: {chunk}")  # Log each chunk for debugging
                             
                         # Once streaming is done, update the message with the complete response
                         message_placeholder.markdown(full_response)
                 
                     LOGGER.debug("GPT Stream completed!")
+                    
+                    # Display cost information if usage data is available
+                    if usage_info and "usage" in usage_info:
+                        cost_info = calculate_cost(usage_info["usage"], usage_info["model"])
+                        if "total_cost" in cost_info:
+                            st.success("✅ **Summary Generated Successfully!**")
+                            
+                            # Create cost breakdown display
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.metric("📊 Total Tokens", f"{cost_info['total_tokens']:,}")
+                                st.metric("💰 Total Cost", f"${cost_info['total_cost']:.6f}")
+                            
+                            with col2:
+                                st.metric("📝 Input Tokens", f"{cost_info['prompt_tokens']:,}")
+                                st.metric("🎯 Output Tokens", f"{cost_info['completion_tokens']:,}")
+                            
+                            # Show detailed breakdown
+                            with st.expander("💳 **Cost Breakdown**"):
+                                st.write(f"**Model Used:** {usage_info['model']}")
+                                st.write(f"**Input Cost:** ${cost_info['prompt_cost']:.6f} ({cost_info['prompt_tokens']:,} tokens)")
+                                st.write(f"**Output Cost:** ${cost_info['completion_cost']:.6f} ({cost_info['completion_tokens']:,} tokens)")
+                                
+                                # Show cost comparison with other models
+                                if usage_info['model'] == 'gpt-4o-mini':
+                                    st.info("💡 **Great choice!** GPT-4o Mini offers excellent creativity at a budget-friendly price.")
+                                elif usage_info['model'] in ['gpt-5', 'gpt-4o']:
+                                    savings_vs_gpt5 = (0.012 - cost_info['total_cost']) if cost_info['total_cost'] < 0.012 else 0
+                                    if savings_vs_gpt5 > 0:
+                                        st.info(f"💰 **You saved ~${savings_vs_gpt5:.4f}** compared to premium models!")
                     
                     # Optionally, provide the full response in a code block with a copy button
                     st.markdown("**Click the copy icon** 📋 below in top right corner to copy your summary and paste it wherever you see fit!")

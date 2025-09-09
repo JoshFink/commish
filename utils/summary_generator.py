@@ -35,7 +35,7 @@ def moderate_text(client, text):
 
 # Lateny troubleshooting: https://platform.openai.com/docs/guides/production-best-practices/improving-latencies
 
-def generate_gpt4_summary_streaming(client, summary, character_choice, trash_talk_level):
+def generate_gpt4_summary_streaming(client, summary, character_choice, trash_talk_level, model="gpt-4o-mini"):
     # Construct the instruction for GPT-4 based on user inputs
     instruction = f"You will be provided a summary below containing the most recent weekly stats for a fantasy football league. \
     Create a weekly recap in the style of {character_choice}. Do not simply repeat every single stat verbatim - be creative while calling out stats and being on theme. You should include trash talk with a level of {trash_talk_level} based on a scale of 1-10 (1 being no trash talk, 10 being excessive hardcore trash talk); feel free to make fun of (or praise) team names and performances, and add a touch of humor related to the chosen character. \
@@ -49,18 +49,25 @@ def generate_gpt4_summary_streaming(client, summary, character_choice, trash_tal
     ]
 
     try:
-        # Send the messages to OpenAI's GPT-4 for analysis
+        # Send the messages to OpenAI for analysis with selected model
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # Use the appropriate model
+            model=model,  # Use the selected model
             messages=messages,
             max_tokens=1600,  # Control response length
-            stream=True
+            stream=True,
+            stream_options={"include_usage": True}  # Enable usage tracking for cost calculation
         )
         
-        # Extract and yield the GPT-4 generated message
+        # Extract and yield the generated message, capturing usage data
+        usage_data = None
         for chunk in response:
+            # Check if this chunk contains usage information (final chunk)
+            if hasattr(chunk, 'usage') and chunk.usage is not None:
+                usage_data = chunk.usage
+                # Yield usage data as a special marker
+                yield f"__USAGE_DATA__{usage_data.prompt_tokens},{usage_data.completion_tokens},{usage_data.total_tokens}__{model}__"
             # Access 'content' directly since 'delta' is an object, not a dictionary
-            if hasattr(chunk.choices[0].delta, 'content'):
+            elif chunk.choices and hasattr(chunk.choices[0].delta, 'content') and chunk.choices[0].delta.content:
                 yield chunk.choices[0].delta.content
 
     except Exception as e:
