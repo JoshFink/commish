@@ -106,6 +106,51 @@ def main():
         3. **Hit "🤖 Generate AI Summary"** to get your weekly summary.
         """)
 
+    # Show last generated summary and PDF export option if available
+    if 'last_summary' in st.session_state:
+        st.markdown("---")
+        st.markdown("### 📄 Last Generated Summary")
+        
+        summary_data = st.session_state['last_summary']
+        generated_time = datetime.fromisoformat(summary_data['generated_at']).strftime("%B %d, %Y at %I:%M %p")
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.markdown(f"**Generated:** {generated_time}")
+            st.markdown(f"**Character:** {summary_data['character']} | **Format:** {summary_data['summary_format']} | **Intensity:** Level {summary_data['trash_talk_level']}")
+        
+        with col2:
+            # PDF export from session state
+            try:
+                pdf_bytes = generate_pdf_from_summary(
+                    summary_content=summary_data['content'],
+                    character=summary_data['character'],
+                    league_name=summary_data['league_name'],
+                    week_number=summary_data['week_number'],
+                    summary_format=summary_data['summary_format'],
+                    trash_talk_level=summary_data['trash_talk_level']
+                )
+                
+                filename = get_filename(
+                    league_name=summary_data['league_name'],
+                    week_number=summary_data['week_number'],
+                    character=summary_data['character']
+                )
+                
+                st.download_button(
+                    label="🎯 Download PDF",
+                    data=pdf_bytes,
+                    file_name=filename,
+                    mime="application/pdf",
+                    help="Download your last generated recap as a PDF",
+                    key="header_pdf_download"
+                )
+            except Exception as e:
+                st.error(f"PDF Error: {str(e)}")
+        
+        # Show the summary content
+        with st.expander("📖 **View Summary Content**"):
+            st.markdown(summary_data['content'])
 
     with st.sidebar:
         st.sidebar.image('./logo.png', use_container_width=True)
@@ -403,6 +448,17 @@ def main():
                             
                         # Once streaming is done, update the message with the complete response
                         message_placeholder.markdown(full_response)
+                        
+                        # Store summary data in session state for PDF export
+                        st.session_state['last_summary'] = {
+                            'content': full_response,
+                            'character': character_description,
+                            'league_name': "Fantasy Football League",  # Could be made configurable
+                            'week_number': "Week Recap",  # Could be extracted from data
+                            'summary_format': summary_format,
+                            'trash_talk_level': trash_talk_level,
+                            'generated_at': datetime.now().isoformat()
+                        }
                 
                     LOGGER.debug("GPT Stream completed!")
                     
@@ -444,50 +500,53 @@ def main():
                         LOGGER.warning("No usage info available for cost display")
                         st.info("💡 **Summary generated successfully!** Cost tracking temporarily unavailable - trying to capture usage data in future versions.")
                     
-                    # PDF Export Section
+                    # PDF Export Section - Generate PDF immediately and provide download
                     st.markdown("---")
-                    col1, col2 = st.columns([3, 1])
+                    st.markdown("**📄 Export Options**")
                     
-                    with col1:
-                        st.markdown("**📄 Export Options**")
-                        st.markdown("Save your recap as a beautiful PDF or copy the text below:")
-                    
-                    with col2:
-                        # Generate PDF when button is clicked
-                        if st.button("🎯 Export PDF", key="export_pdf", help="Generate a beautifully formatted PDF version of your recap"):
-                            try:
-                                with st.spinner("🎨 Creating your beautiful PDF..."):
-                                    # Generate PDF
-                                    pdf_bytes = generate_pdf_from_summary(
-                                        summary_content=full_response,
-                                        character=character_description,
-                                        league_name="Fantasy Football League",  # Could be made configurable
-                                        week_number="Week Recap",  # Could be extracted from data
-                                        summary_format=summary_format,
-                                        trash_talk_level=trash_talk_level
-                                    )
-                                    
-                                    # Generate filename
-                                    filename = get_filename(
-                                        league_name="Fantasy Football League",
-                                        week_number="Week_Recap", 
-                                        character=character_description
-                                    )
-                                    
-                                    # Provide download button
-                                    st.download_button(
-                                        label="📥 Download PDF",
-                                        data=pdf_bytes,
-                                        file_name=filename,
-                                        mime="application/pdf",
-                                        help="Click to download your fantasy football recap as a PDF"
-                                    )
-                                    
-                                    st.success("✅ PDF generated successfully! Click the download button above.")
-                                    
-                            except Exception as e:
-                                st.error(f"❌ Error generating PDF: {str(e)}")
-                                LOGGER.error(f"PDF generation error: {str(e)}")
+                    # Generate PDF automatically and provide download button
+                    try:
+                        with st.spinner("🎨 Creating your beautiful PDF..."):
+                            # Generate PDF using the data from session state
+                            pdf_bytes = generate_pdf_from_summary(
+                                summary_content=full_response,
+                                character=character_description,
+                                league_name="Fantasy Football League",  # Could be made configurable
+                                week_number="Week Recap",  # Could be extracted from data
+                                summary_format=summary_format,
+                                trash_talk_level=trash_talk_level
+                            )
+                            
+                            # Generate filename
+                            filename = get_filename(
+                                league_name="Fantasy Football League",
+                                week_number="Week_Recap", 
+                                character=character_description
+                            )
+                        
+                        # Create columns for the download options
+                        col1, col2 = st.columns([1, 1])
+                        
+                        with col1:
+                            # Provide download button for PDF
+                            st.download_button(
+                                label="🎯 Download PDF",
+                                data=pdf_bytes,
+                                file_name=filename,
+                                mime="application/pdf",
+                                help="Click to download your fantasy football recap as a PDF",
+                                use_container_width=True
+                            )
+                            st.success("✅ PDF ready for download!")
+                        
+                        with col2:
+                            st.markdown("**Or copy the text below:**")
+                        
+                    except Exception as e:
+                        st.error(f"❌ Error generating PDF: {str(e)}")
+                        LOGGER.error(f"PDF generation error: {str(e)}")
+                        # Still show copy option even if PDF fails
+                        st.markdown("**Copy the text below:**")
                     
                     # Text copy section
                     st.markdown("**Click the copy icon** 📋 below in top right corner to copy your summary text:")
