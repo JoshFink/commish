@@ -194,6 +194,149 @@ commish/
 3. Add your secrets in the app settings
 4. Deploy with one click!
 
+### Docker Deployment (macOS)
+
+For production deployment or isolated environments, Docker provides a clean, portable solution.
+
+#### Prerequisites
+- [Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/) installed and running
+- Basic familiarity with Docker commands
+
+#### 1. Create Dockerfile
+Create a `Dockerfile` in the project root:
+
+```dockerfile
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    software-properties-common \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Create streamlit config directory
+RUN mkdir -p /app/.streamlit
+
+# Expose the port Streamlit runs on
+EXPOSE 8501
+
+# Health check
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+
+# Run the application
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+```
+
+#### 2. Create Docker Compose (Recommended)
+Create `docker-compose.yml` for easier management:
+
+```yaml
+version: '3.8'
+services:
+  fantasy-commish:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./.streamlit:/app/.streamlit
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+    restart: unless-stopped
+    container_name: fantasy-commish
+```
+
+#### 3. Configure Secrets
+Create `.streamlit/secrets.toml` with your credentials:
+
+```toml
+[default]
+APP_PASSWORD = "your_secure_password_here"
+OPENAI_ORG_ID = "your_openai_org_id"
+OPENAI_API_PROJECT_ID = "your_project_id"
+OPENAI_COMMISH_API_KEY = "your_api_key"
+```
+
+#### 4. Build and Run
+```bash
+# Build the image
+docker-compose build
+
+# Run the container
+docker-compose up -d
+
+# View logs
+docker-compose logs -f fantasy-commish
+
+# Stop the container
+docker-compose down
+```
+
+#### 5. Alternative Docker Commands
+Without docker-compose:
+
+```bash
+# Build the image
+docker build -t fantasy-commish .
+
+# Run the container
+docker run -d \
+  --name fantasy-commish \
+  -p 8501:8501 \
+  -v $(pwd)/.streamlit:/app/.streamlit \
+  fantasy-commish
+
+# View logs
+docker logs fantasy-commish
+
+# Stop the container
+docker stop fantasy-commish
+docker rm fantasy-commish
+```
+
+#### 6. Access Your Application
+- Open your browser to `http://localhost:8501`
+- The application will be available on your local network
+
+#### Best Practices
+- **Security**: Never commit secrets to version control - use `.gitignore` for `.streamlit/secrets.toml`
+- **Updates**: Rebuild the image when you update the code: `docker-compose build --no-cache`
+- **Persistence**: Mount volumes for any data you want to persist between container restarts
+- **Monitoring**: Use `docker stats fantasy-commish` to monitor resource usage
+- **Backup**: Regularly backup your secrets file and any persistent data
+
+#### Troubleshooting
+```bash
+# Check container status
+docker ps -a
+
+# Inspect container
+docker inspect fantasy-commish
+
+# Execute commands inside container
+docker exec -it fantasy-commish /bin/bash
+
+# View real-time logs
+docker logs -f fantasy-commish
+
+# Remove all containers and images (clean slate)
+docker system prune -af
+```
+
 ### Local Development
 ```bash
 streamlit run app.py --server.port 8501
