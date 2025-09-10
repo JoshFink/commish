@@ -26,6 +26,13 @@ An intelligent fantasy football assistant that generates creative weekly recaps 
 - **Team Statistics**: Transaction tracking, standings, and more
 - **Cost Optimization**: Model recommendations for best creativity-to-cost ratio
 
+### 🏆 Statistical Power Rankings
+- **Objective Team Analysis**: Data-driven power rankings separate from AI summaries
+- **Multiple Ranking Algorithms**: Comprehensive score, Oberon Mt. Power Rating, Team Value Index
+- **Dual Display Formats**: Choose between detailed list view or compact table view
+- **Performance Metrics**: Win percentage, scoring averages, consistency, recent form analysis
+- **Sleeper Integration**: Full support for Sleeper fantasy leagues
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -74,6 +81,7 @@ An intelligent fantasy football assistant that generates creative weekly recaps 
    - Trash Talk Level (1-10 scale)
    - OpenAI Model Selection
 5. **Generate**: Click "🤖 Generate AI Summary" and watch your recap come to life!
+6. **Power Rankings**: Use "📊 Calculate Power Rankings" for objective statistical analysis
 
 ## 🎭 Character Examples
 
@@ -94,6 +102,48 @@ An intelligent fantasy football assistant that generates creative weekly recaps 
 - **Stephen A. Smith**: LOUD, passionate takes with "HOWEVER!" and dramatic proclamations
 - **Weird Al Yankovic**: Parody song lyrics turned into fantasy football commentary
 - **Custom Characters**: Describe any persona for unique summaries
+
+## 📊 Power Rankings System
+
+Transform your league's statistical data into comprehensive power rankings that go beyond simple win-loss records.
+
+### 🏆 Ranking Algorithms
+
+**Comprehensive Power Score (Primary)**
+- 30% Win Percentage (managerial skill)
+- 25% Scoring Average (offensive production) 
+- 20% Point Differential (dominance)
+- 15% Recent Form (momentum)
+- 10% Consistency (reliability)
+
+**Oberon Mt. Power Rating**
+- 60% Average Score + 20% High/Low Score Average + 20% Win Percentage
+- Balanced approach emphasizing consistent scoring with win rate consideration
+- Goal: Higher scores indicate better overall team strength
+
+**Team Value Index** 
+- (Points For / Points Against) × Win Percentage
+- Measures efficiency by combining scoring differential with actual wins achieved
+- Goal: Higher values show you're winning games efficiently relative to points
+
+### 📋 Display Options
+
+**📋 List View**
+- Detailed text-based rankings with full explanations
+- Complete methodology breakdown
+- All alternative ranking methods included
+- Perfect for comprehensive analysis
+
+**📊 Table View** 
+- Compact, responsive table format
+- Optimized column widths for maximum data visibility
+- Collapsible methodology section
+- Dynamic height based on league size
+- Side-by-side alternative rankings comparison
+
+### 🎯 Current Support
+- **Sleeper Leagues**: Full integration with comprehensive data analysis
+- **ESPN/Yahoo**: Coming soon
 
 ## 💰 Cost Management
 
@@ -125,12 +175,13 @@ An intelligent fantasy football assistant that generates creative weekly recaps 
 commish/
 ├── app.py                      # Main Streamlit application
 ├── utils/
-│   ├── summary_generator.py    # OpenAI integration and streaming
-│   ├── model_config.py        # Model pricing and recommendations
-│   ├── espn_helper.py         # ESPN API utilities
-│   ├── sleeper_helper.py      # Sleeper API utilities
-│   ├── yahoo_helper.py        # Yahoo API utilities (legacy)
-│   └── helper.py              # General utilities
+│   ├── summary_generator.py     # OpenAI integration and streaming
+│   ├── power_ranking_generator.py # Statistical power rankings system
+│   ├── model_config.py         # Model pricing and recommendations
+│   ├── espn_helper.py          # ESPN API utilities
+│   ├── sleeper_helper.py       # Sleeper API utilities
+│   ├── yahoo_helper.py         # Yahoo API utilities (legacy)
+│   └── helper.py               # General utilities
 ├── requirements.txt           # Python dependencies
 └── AUTHENTICATION_SETUP.md    # Detailed auth configuration
 ```
@@ -162,9 +213,11 @@ streamlit run app.py --server.port 8501
 - `openai==1.107.0` - OpenAI API client
 - `espn-api==0.45.1` - ESPN fantasy API
 - `sleeper-api-wrapper==1.1.0` - Sleeper fantasy API
-- `yfpy==13.0.0` - Yahoo fantasy API
+- `yfpy==16.0.3` - Yahoo fantasy API
 - `pytz==2025.2` - Timezone handling
 - `httpx==0.28.1` - HTTP client for OpenAI
+- `reportlab==4.2.2` - PDF generation for summaries
+- `pandas>=2.0.0` - Data manipulation for power rankings
 
 ## 📝 License
 
