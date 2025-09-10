@@ -4,71 +4,14 @@ import suppress_warnings
 # Force Eastern Time Zone for logging
 import os
 import time
-import logging
-from datetime import datetime
-import pytz
-
-# Set environment variable for system timezone
 os.environ['TZ'] = 'America/New_York'
 # tzset() is not available on Windows, so handle gracefully
 if hasattr(time, 'tzset'):
     time.tzset()
 
-# Configure Python logging to use Eastern Time
-class EasternTimeFormatter(logging.Formatter):
-    def converter(self, timestamp):
-        eastern = pytz.timezone('America/New_York')
-        return datetime.fromtimestamp(timestamp, tz=eastern)
-    
-    def formatTime(self, record, datefmt=None):
-        dt = self.converter(record.created)
-        if datefmt:
-            s = dt.strftime(datefmt)
-        else:
-            s = dt.strftime('%H:%M:%S')
-        return s
-
-# Apply Eastern Time formatter to all loggers
-def configure_eastern_logging():
-    # Get root logger
-    root_logger = logging.getLogger()
-    
-    # Configure all existing handlers
-    for handler in root_logger.handlers:
-        if hasattr(handler, 'formatter') and handler.formatter:
-            # Preserve original format but use Eastern Time
-            original_fmt = handler.formatter._fmt if hasattr(handler.formatter, '_fmt') else '%(message)s'
-            handler.setFormatter(EasternTimeFormatter(original_fmt))
-    
-    # Also configure streamlit logger specifically
-    streamlit_logger = logging.getLogger('streamlit')
-    for handler in streamlit_logger.handlers:
-        if hasattr(handler, 'formatter') and handler.formatter:
-            original_fmt = handler.formatter._fmt if hasattr(handler.formatter, '_fmt') else '%(message)s'
-            handler.setFormatter(EasternTimeFormatter(original_fmt))
-
-# Apply the configuration
-configure_eastern_logging()
-
 import streamlit as st
 from openai import OpenAI
 from streamlit.logger import get_logger
-
-# Reconfigure logging after Streamlit imports
-configure_eastern_logging()
-
-# Also hook into Streamlit's specific loggers
-def configure_streamlit_loggers():
-    # Configure all Streamlit-related loggers
-    for logger_name in ['streamlit', 'streamlit.main', 'streamlit.server', 'streamlit.web']:
-        logger = logging.getLogger(logger_name)
-        for handler in logger.handlers:
-            if hasattr(handler, 'formatter'):
-                # Use Streamlit's typical format but with Eastern Time
-                formatter = EasternTimeFormatter('[%(asctime)s] %(message)s')
-                handler.setFormatter(formatter)
-
-configure_streamlit_loggers()
 from utils import summary_generator
 from utils.helper import check_availability
 from utils.model_config import get_flattened_models, estimate_cost, get_model_recommendation, calculate_cost
