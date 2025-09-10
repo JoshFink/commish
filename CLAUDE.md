@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow Policy
+
+**IMPORTANT**: Always automatically stage, commit, and push any files you create or modify. After making changes:
+1. `git add <files>`
+2. `git commit -m "descriptive message"`  
+3. `git push`
+
+This keeps the repository clean and ensures all changes are immediately synced to the remote.
+
 ## Project Overview
 
 This is a Fantasy Football AI Commissioner application built with Streamlit that generates creative weekly recaps and power rankings using OpenAI models. The app integrates with ESPN, Sleeper, and Yahoo fantasy leagues to transform league data into entertaining character-driven narratives.
