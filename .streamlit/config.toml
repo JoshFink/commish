@@ -7,6 +7,3 @@ font="sans serif"
 
 [logger]
 level = 'info'
-
-[server]
-headless = true

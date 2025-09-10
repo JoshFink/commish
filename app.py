@@ -1,14 +1,6 @@
 # Import warning suppression first
 import suppress_warnings
 
-# Force Eastern Time Zone for logging
-import os
-import time
-os.environ['TZ'] = 'America/New_York'
-# tzset() is not available on Windows, so handle gracefully
-if hasattr(time, 'tzset'):
-    time.tzset()
-
 import streamlit as st
 from openai import OpenAI
 from streamlit.logger import get_logger
